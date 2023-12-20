@@ -1,7 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class RegistrationPage extends JPanel {
+public class LoginPage extends JPanel {
     private JTextArea jcomp1;
     private JTextArea jcomp2;
     private JLabel jcomp3;
@@ -10,10 +12,10 @@ public class RegistrationPage extends JPanel {
     private JButton jcomp7;
     private JLabel imageLabel;
 
-    public RegistrationPage() {
+    public LoginPage() {
         // Construct components
-        jcomp1 = new JTextArea(2, 30); // Adjust rows and columns for the JTextArea
-        jcomp2 = new JTextArea(2, 30); // Adjust rows and columns for the JTextArea
+        jcomp1 = new JTextArea(2, 30);
+        jcomp2 = new JTextArea(2, 30);
         jcomp3 = new JLabel("Username: ");
         jcomp4 = new JLabel("Password: ");
         jcomp6 = new JButton("Login");
@@ -24,7 +26,7 @@ public class RegistrationPage extends JPanel {
 
         // Set layout manager to BorderLayout for organized placement
         setLayout(new BorderLayout());
-        
+
         // Create panels to manage components' placement
         JPanel inputPanel = new JPanel(new GridBagLayout());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -55,16 +57,30 @@ public class RegistrationPage extends JPanel {
         add(imageLabel, BorderLayout.NORTH);
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        // Add ActionListener to the Register button
+        jcomp7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Registration - Astawash");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                RegistrationPage registrationPage = new RegistrationPage();
+                frame.getContentPane().add(registrationPage);
+                frame.setSize(600, 600); // Increased window height
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            }
+        });
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Login - Astawash");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            RegistrationPage panel = new RegistrationPage();
+            LoginPage panel = new LoginPage();
             frame.getContentPane().add(panel);
-            frame.setSize(600, 500); // Increased window height
-            frame.setLocationRelativeTo(null); // Center the window on the screen
+            frame.setSize(600, 500);
+            frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
     }

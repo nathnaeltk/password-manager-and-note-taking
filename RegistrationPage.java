@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class RegistrationPage extends JPanel {
     private JTextArea jcomp1;
@@ -8,17 +10,19 @@ public class RegistrationPage extends JPanel {
     private JLabel jlabelname;
     private JLabel jcomp3;
     private JLabel jcomp4;
+    private JButton jcomp6;
     private JButton jcomp7;
     private JLabel imageLabel;
 
     public RegistrationPage() {
         // Construct components
-        jcomp1 = new JTextArea(2, 30); // Increased rows for the JTextArea
-        jcomp2 = new JTextArea(2, 30); // Increased rows for the JTextArea
+        jcomp1 = new JTextArea(2, 30);
+        jcomp2 = new JTextArea(2, 30);
         jcompname = new JTextArea(2, 30);
         jlabelname = new JLabel("Name: ");
         jcomp3 = new JLabel("Username: ");
         jcomp4 = new JLabel("Password: ");
+        jcomp6 = new JButton("Login");
         jcomp7 = new JButton("Register");
 
         ImageIcon imageIcon = new ImageIcon("image.png");
@@ -26,7 +30,7 @@ public class RegistrationPage extends JPanel {
 
         // Set layout manager to BorderLayout for organized placement
         setLayout(new BorderLayout());
-        
+
         // Create panels to manage components' placement
         JPanel inputPanel = new JPanel(new GridBagLayout());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -54,12 +58,27 @@ public class RegistrationPage extends JPanel {
         inputPanel.add(jcomp2, gbc);
 
         // Add components to buttonPanel using FlowLayout
+        buttonPanel.add(jcomp6);
         buttonPanel.add(jcomp7);
 
         // Add components to main panel using BorderLayout
         add(imageLabel, BorderLayout.NORTH);
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        // Add ActionListener to the Login button
+        jcomp6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = new JFrame("Login - Astawash");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only this frame
+                LoginPage loginPage = new LoginPage();
+                frame.getContentPane().add(loginPage);
+                frame.setSize(600, 500); // Adjust size as needed
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -68,8 +87,8 @@ public class RegistrationPage extends JPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             RegistrationPage panel = new RegistrationPage();
             frame.getContentPane().add(panel);
-            frame.setSize(600, 600); // Increased window height
-            frame.setLocationRelativeTo(null); // Center the window on the screen
+            frame.setSize(600, 600);
+            frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
     }
