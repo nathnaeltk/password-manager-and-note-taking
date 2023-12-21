@@ -158,7 +158,6 @@ private void displayNoteForSelectedTitle() {
         HashMap<String, String> noteData = data.get(selectedTitle);
         if (noteData != null) {
             String note = noteData.get("note");
-            System.out.println(noteData);
             jcomp9.setText(selectedTitle); // Set the selected title to jcomp9
             jcomp11.setText(note);
         }
