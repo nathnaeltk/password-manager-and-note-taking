@@ -1,8 +1,8 @@
 import java.awt.*;
 import javax.swing.*;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +12,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class MainPage extends JPanel {
     private JMenuBar Options;
@@ -28,8 +30,6 @@ public class MainPage extends JPanel {
     private JLabel jcomp12;
     String filePath = "Data.json";
     private DefaultListModel<String> listModel;
-
-
 
     public MainPage() {
         //construct preComponents
@@ -52,25 +52,8 @@ public class MainPage extends JPanel {
         Options = new JMenuBar();
         Options.add(optionsMenu);
         Options.add(helpMenu);
-       listModel = new DefaultListModel<>();
+        listModel = new DefaultListModel<>();
 
-        try {
-            File file = new File(filePath);
-            if (file.exists() && file.length() > 0)  {
-                // Reading keys from the JSON file
-                FileReader fileReader = new FileReader(file);
-                HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, HashMap.class);
-                fileReader.close();
-
-                // Adding keys to the listModel
-                Set<String> keys = data.keySet();
-                for (String key : keys) {
-                    listModel.addElement(key);
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
         noteList = new JList<>(listModel);
         scrollPane = new JScrollPane(noteList);
         jcomp5 = new JButton("Manage Passwords");
@@ -86,18 +69,18 @@ public class MainPage extends JPanel {
         jcomp88 = new JLabel("Note Title: ");
         jcomp9 = new JTextArea();
         // format the day today into the label string
-        jcomp10 = new JLabel("Date: "+java.time.LocalDate.now());
+        jcomp10 = new JLabel("Date: " + java.time.LocalDate.now());
         jcomp11 = new JTextArea();
         jcomp12 = new JLabel("My Notes");
 
-        //set components properties
+        // set components properties
         jcomp11.setToolTipText("Text");
 
-        //adjust size and set layout
+        // adjust size and set layout
         setPreferredSize(new Dimension(669, 368));
         setLayout(null);
 
-        //add components
+        // add components
         add(Options);
         add(scrollPane);
         add(jcomp5);
@@ -110,7 +93,7 @@ public class MainPage extends JPanel {
         add(jcomp11);
         add(jcomp12);
 
-        //set component bounds (only needed by Absolute Positioning)
+        // set component bounds (only needed by Absolute Positioning)
         Options.setBounds(0, 0, 735, 20);
         scrollPane.setBounds(60, 115, 150, 200); // Adjust size as needed
         jcomp5.setBounds(260, 40, 165, 25);
@@ -122,7 +105,66 @@ public class MainPage extends JPanel {
         jcomp10.setBounds(545, 80, 100, 25);
         jcomp11.setBounds(220, 115, 420, 200);
         jcomp12.setBounds(60, 90, 60, 25);
+
+        // Add ListSelectionListener to noteList
+        noteList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    displayNoteForSelectedTitle();
+                }
+            }
+        });
+        // Read data from file and populate the listModel
+        try {
+            File file = new File(filePath);
+            if (file.exists() && file.length() > 0) {
+                FileReader fileReader = new FileReader(file);
+                HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, HashMap.class);
+                fileReader.close();
+
+                Set<String> keys = data.keySet();
+                for (String key : keys) {
+                    listModel.addElement(key);
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
+
+// Method to read data from the file and return as a HashMap
+private HashMap<String, HashMap<String, String>> readDataFromFile() {
+    try {
+        File file = new File(filePath);
+        if (file.exists() && file.length() > 0) {
+            FileReader fileReader = new FileReader(file);
+
+            // Use TypeToken to handle generic types during deserialization
+            TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
+            return new Gson().fromJson(fileReader, typeToken.getType());
+        }
+    } catch (IOException ex) {
+        ex.printStackTrace();
+    }
+    return new HashMap<>();
+}
+
+    // Method to display the selected note title and content
+private void displayNoteForSelectedTitle() {
+    String selectedTitle = noteList.getSelectedValue();
+    if (selectedTitle != null) {
+        HashMap<String, HashMap<String, String>> data = readDataFromFile();
+        HashMap<String, String> noteData = data.get(selectedTitle);
+        if (noteData != null) {
+            String note = noteData.get("note");
+            System.out.println(noteData);
+            jcomp9.setText(selectedTitle); // Set the selected title to jcomp9
+            jcomp11.setText(note);
+        }
+    }
+}
+ // Method to save the note data to the file
  public void save() {
         String title = jcomp9.getText();
         String note = jcomp11.getText();
@@ -170,6 +212,8 @@ public class MainPage extends JPanel {
             jcomp11.setText("");
         }
     }
+    
+    // Main method to create and display the JFrame
     public static void main(String[] args) {
         JFrame frame = new JFrame("Astawash Dashboard");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
