@@ -77,17 +77,21 @@ public class RegistrationPage extends JPanel {
                 String username = jcomp1.getText();
                 String password = jcomp2.getText();
 
-                User newUser = new User(name, username, password);
-
-                userList.add(newUser); // Add user to the list
-
-                jcompname.setText("");
-                jcomp1.setText("");
-                jcomp2.setText("");
-
-                saveUsersToJson(); // Save users to JSON file
+                // Check if the username already exists
+                if (userExists(username)) {
+                    JOptionPane.showMessageDialog(RegistrationPage.this, "Account with this username already exists!");
+                } else {
+                    User newUser = new User(name, username, password);
+                    userList.add(newUser); // Add user to the list
+                    jcompname.setText("");
+                    jcomp1.setText("");
+                    jcomp2.setText("");
+                    saveUsersToJson();
+                    JOptionPane.showMessageDialog(RegistrationPage.this, "Registration Successful! You may now login.");
+                }
             }
         });
+        
 
         jcomp6.addActionListener(new ActionListener() {
             @Override
@@ -98,6 +102,15 @@ public class RegistrationPage extends JPanel {
                 repaint();
             }
         });
+        }
+
+        private boolean userExists(String username) {
+            for (User user : userList) {
+                if (user.getUsername().equals(username)) {
+                    return true; // User already exists
+                }
+            }
+            return false; // User does not exist
         }
 
         private void addLoginPageContent() {
