@@ -1,7 +1,15 @@
 import javax.swing.*;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.List;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class LoginPage extends JPanel {
     private JTextArea jcomp1;
@@ -60,6 +68,26 @@ public class LoginPage extends JPanel {
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
+        // login function
+        jcomp6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String enteredUsername = jcomp1.getText();
+                String enteredPassword = jcomp2.getText();
+
+                // Check credentials
+                if (checkCredentials(enteredUsername, enteredPassword)) {
+                    // If credentials match, close login page and open MainPage
+                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(LoginPage.this);
+                    frame.dispose(); // Close login page
+                    openMainPage();
+                } else {
+                    JOptionPane.showMessageDialog(LoginPage.this, "Invalid username or password!");
+                }
+            }
+        });
+
+
         // Add ActionListener to the Register button
         jcomp7.addActionListener(new ActionListener() {
             @Override
@@ -71,6 +99,37 @@ public class LoginPage extends JPanel {
                 repaint();
             }
         });
+    }
+
+    private boolean checkCredentials(String username, String password) {
+        // Read users from JSON file and check credentials
+        try (FileReader fileReader = new FileReader("users.json")) {
+            Gson gson = new Gson();
+            Type userListType = new TypeToken<List<User>>(){}.getType();
+            List<User> userList = gson.fromJson(fileReader, userListType);
+
+            if (userList != null) {
+                for (User user : userList) {
+                    if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                        return true; // Match found
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return false; // No match found
+    }
+
+    private void openMainPage() {
+        // Open MainPage
+        MainPage mainPage = new MainPage();
+        JFrame mainFrame = new JFrame("Main Page");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.getContentPane().add(mainPage);
+        mainFrame.setSize(669, 400);
+        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setVisible(true);
     }
 
     // Method to add registration content to the panel
