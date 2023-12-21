@@ -11,7 +11,7 @@ import java.util.List;
 
 public class RegistrationPage extends JPanel {
     private JTextArea jcomp1;
-    private JTextArea jcomp2;
+    private JPasswordField jcomp2;
     private JTextArea jcompname;
     private JLabel jlabelname;
     private JLabel jcomp3;
@@ -24,7 +24,10 @@ public class RegistrationPage extends JPanel {
 
     public RegistrationPage() {
         jcomp1 = new JTextArea(2, 30);
-        jcomp2 = new JTextArea(2, 30);
+        jcomp2 = new JPasswordField(30);
+        Dimension preferredSize = jcomp2.getPreferredSize();
+        preferredSize.height *= 2; // Doubling the height
+        jcomp2.setPreferredSize(preferredSize);
         jcompname = new JTextArea(2, 30);
         jlabelname = new JLabel("Name: ");
         jcomp3 = new JLabel("Username: ");
