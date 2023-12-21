@@ -46,9 +46,10 @@ public class MainPage extends JPanel {
         jcomp6 = new JButton("New Note");
         jcomp7 = new JButton("Save");
         jcomp8 = new JButton("Logout");
-        jcomp88 = new JLabel("Note Title");
+        jcomp88 = new JLabel("Note Title: ");
         jcomp9 = new JTextArea();
-        jcomp10 = new JLabel("Date: DD/MM/YY");
+        // format the day today into the label string
+        jcomp10 = new JLabel("Date: "+java.time.LocalDate.now());
         jcomp11 = new JTextArea();
         jcomp12 = new JLabel("My Notes");
 
@@ -83,11 +84,11 @@ public class MainPage extends JPanel {
         jcomp9.setBounds(280, 80, 250, 30);
         jcomp10.setBounds(545, 80, 100, 25);
         jcomp11.setBounds(220, 115, 420, 200);
-        jcomp12.setBounds(60, 80, 60, 25);
+        jcomp12.setBounds(60, 90, 60, 25);
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("MyPanel");
+        JFrame frame = new JFrame("Astawash Dashboard");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(new MainPage());
         frame.pack();

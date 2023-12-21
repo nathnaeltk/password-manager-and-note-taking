@@ -109,7 +109,7 @@ public class LoginPage extends JPanel {
         JFrame mainFrame = new JFrame("Main Page");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.getContentPane().add(mainPage);
-        mainFrame.setSize(800, 600);
+        mainFrame.setSize(669, 388);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
     }
