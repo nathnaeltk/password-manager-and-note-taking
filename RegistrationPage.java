@@ -1,7 +1,13 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegistrationPage extends JPanel {
     private JTextArea jcomp1;
@@ -14,8 +20,9 @@ public class RegistrationPage extends JPanel {
     private JButton jcomp7;
     private JLabel imageLabel;
 
+    private List<User> userList; // New list to store users
+
     public RegistrationPage() {
-        // Construct components
         jcomp1 = new JTextArea(2, 30);
         jcomp2 = new JTextArea(2, 30);
         jcompname = new JTextArea(2, 30);
@@ -28,10 +35,8 @@ public class RegistrationPage extends JPanel {
         ImageIcon imageIcon = new ImageIcon("image.png");
         imageLabel = new JLabel(imageIcon);
 
-        // Set layout manager to BorderLayout for organized placement
         setLayout(new BorderLayout());
 
-        // Create panels to manage components' placement
         JPanel inputPanel = new JPanel(new GridBagLayout());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -39,7 +44,6 @@ public class RegistrationPage extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Add components to inputPanel using GridBagLayout
         gbc.gridx = 0;
         gbc.gridy = 0;
         inputPanel.add(jlabelname, gbc);
@@ -57,28 +61,59 @@ public class RegistrationPage extends JPanel {
         gbc.gridy++;
         inputPanel.add(jcomp2, gbc);
 
-        // Add components to buttonPanel using FlowLayout
         buttonPanel.add(jcomp6);
         buttonPanel.add(jcomp7);
 
-        // Add components to main panel using BorderLayout
         add(imageLabel, BorderLayout.NORTH);
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add ActionListener to the Login button
+        userList = new ArrayList<>(); // Initialize user list
+
+        jcomp7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = jcompname.getText();
+                String username = jcomp1.getText();
+                String password = jcomp2.getText();
+
+                User newUser = new User(name, username, password);
+
+                userList.add(newUser); // Add user to the list
+
+                jcompname.setText("");
+                jcomp1.setText("");
+                jcomp2.setText("");
+
+                saveUsersToJson(); // Save users to JSON file
+            }
+        });
+
         jcomp6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame frame = new JFrame("Login - Astawash");
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only this frame
-                LoginPage loginPage = new LoginPage();
-                frame.getContentPane().add(loginPage);
-                frame.setSize(600, 500); // Adjust size as needed
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+                removeAll();
+                addLoginPageContent();
+                revalidate();
+                repaint();
             }
         });
+        }
+
+        private void addLoginPageContent() {
+            LoginPage loginPage = new LoginPage(); // Instantiate the LoginPage
+            add(loginPage); // Add the LoginPage to the RegistrationPage panel
+        }
+
+    private void saveUsersToJson() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(userList);
+
+        try (FileWriter fileWriter = new FileWriter("users.json")) {
+            fileWriter.write(json);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

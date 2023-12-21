@@ -11,6 +11,7 @@ public class LoginPage extends JPanel {
     private JButton jcomp6;
     private JButton jcomp7;
     private JLabel imageLabel;
+    private JPanel registrationPanel; // Panel to hold registration content
 
     public LoginPage() {
         // Construct components
@@ -30,6 +31,7 @@ public class LoginPage extends JPanel {
         // Create panels to manage components' placement
         JPanel inputPanel = new JPanel(new GridBagLayout());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        registrationPanel = new JPanel(new BorderLayout()); // Initialize the registration panel
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
@@ -62,15 +64,21 @@ public class LoginPage extends JPanel {
         jcomp7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame frame = new JFrame("Registration - Astawash");
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                RegistrationPage registrationPage = new RegistrationPage();
-                frame.getContentPane().add(registrationPage);
-                frame.setSize(600, 600); // Increased window height
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+                // Clear the existing content and add the registration content
+                removeAll();
+                addRegistrationContent();
+                revalidate();
+                repaint();
             }
         });
+    }
+
+    // Method to add registration content to the panel
+    private void addRegistrationContent() {
+        // Import the RegistrationPage content here
+        RegistrationPage registrationPage = new RegistrationPage();
+        registrationPanel.add(registrationPage); // Add the RegistrationPage content to the registrationPanel
+        add(registrationPanel, BorderLayout.CENTER);
     }
 
     public static void main(String[] args) {
@@ -79,7 +87,7 @@ public class LoginPage extends JPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             LoginPage panel = new LoginPage();
             frame.getContentPane().add(panel);
-            frame.setSize(600, 500);
+            frame.setSize(600, 560);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
