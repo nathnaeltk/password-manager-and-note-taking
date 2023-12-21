@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class LoginPage extends JPanel {
     private JTextArea jcomp1;
-    private JTextArea jcomp2;
+    private JPasswordField  jcomp2;
     private JLabel jcomp3;
     private JLabel jcomp4;
     private JButton jcomp6;
@@ -24,7 +24,10 @@ public class LoginPage extends JPanel {
     public LoginPage() {
         // Construct components
         jcomp1 = new JTextArea(2, 30);
-        jcomp2 = new JTextArea(2, 30);
+        jcomp2 = new JPasswordField(30);
+        Dimension preferredSize = jcomp2.getPreferredSize();
+        preferredSize.height *= 2; // Doubling the height
+        jcomp2.setPreferredSize(preferredSize);
         jcomp3 = new JLabel("Username: ");
         jcomp4 = new JLabel("Password: ");
         jcomp6 = new JButton("Login");
