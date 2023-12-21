@@ -56,7 +56,7 @@ public class PasswordsManager extends JPanel {
         add(jcomp13);
 
         //set component bounds (only needed by Absolute Positioning)
-        jcomp1.setBounds(35, 140, 160, 175);
+        jcomp1.setBounds(45, 140, 160, 175);
         jcomp2.setBounds(330, 140, 265, 35);
         jcomp3.setBounds(235, 145, 100, 25);
         jcomp4.setBounds(215, 185, 120, 25);
