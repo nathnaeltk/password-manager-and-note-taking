@@ -3,6 +3,8 @@ import javax.swing.*;
 
 public class PasswordsManager extends JPanel {
     private JList<String> jcomp1;
+    private JTextField jcomp2d;
+    private JButton jcomp11d;
     private JTextField jcomp2;
     private JLabel jcomp3;
     private JLabel jcomp4;
@@ -22,6 +24,8 @@ public class PasswordsManager extends JPanel {
 
         //construct components
         jcomp1 = new JList<>(jcomp1Items);
+        jcomp2d = new JTextField(5);
+        jcomp11d = new JButton("Search");
         jcomp2 = new JTextField(5);
         jcomp3 = new JLabel("Website Name");
         jcomp4 = new JLabel("Email or Username");
@@ -40,6 +44,8 @@ public class PasswordsManager extends JPanel {
 
         //add components
         add(jcomp1);
+        add(jcomp2d);
+        add(jcomp11d);
         add(jcomp2);
         add(jcomp3);
         add(jcomp4);
@@ -54,6 +60,8 @@ public class PasswordsManager extends JPanel {
 
         //set component bounds (only needed by Absolute Positioning)
         jcomp1.setBounds(45, 140, 160, 175);
+        jcomp2d.setBounds(220, 100, 265, 35);
+        jcomp11d.setBounds(495, 105, 100, 25);
         jcomp2.setBounds(330, 160, 265, 35);
         jcomp3.setBounds(235, 165, 100, 25);
         jcomp4.setBounds(215, 205, 120, 25);
