@@ -1,59 +1,60 @@
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class MyPanel extends JPanel {
-    private JButton jcomp1;
-    private JButton jcomp2;
-    private JButton jcomp3;
-    private JLabel jcomp4;
-    private JLabel jcomp5;
-    private JLabel jcomp6;
-    private JTextField jcomp7;
-    private JTextField jcomp8;
-    private JTextField jcomp9;
-    private JList jcomp10;
+public class page extends JPanel {
+    private DefaultListModel<String> passwordListModel;
+    private JList<String> passwordList;
+    private JButton addButton;
+    private JButton deleteButton;
+    private JButton updateButton;
+    private JLabel userLabel;
+    private JLabel passwordLabel;
+    private JLabel websiteLabel;
+    private JTextField userTextField;
+    private JTextField passwordTextField;
+    private JTextField websiteTextField;
 
-    public MyPanel() {
-        //construct preComponents
-        String[] jcomp10Items = {"Item 1", "Item 2", "Item 3"};
+    public page() {
+        // construct components
+        addButton = new JButton("ADD");
+        deleteButton = new JButton("DELETE");
+        updateButton = new JButton("UPDATE");
+        userLabel = new JLabel("   USER OR USERNAME");
+        passwordLabel = new JLabel("    PASSWORD");
+        websiteLabel = new JLabel("  WEBSITE");
+        userTextField = new JTextField(5);
+        passwordTextField = new JTextField(5);
+        websiteTextField = new JTextField(5);
+        passwordListModel = new DefaultListModel<>();
+        passwordList = new JList<>(passwordListModel);
 
-        //construct components
-        jcomp1 = new JButton ("ADD");
-        jcomp2 = new JButton ("DELETE");
-        jcomp3 = new JButton ("UPDATE");
-        jcomp4 = new JLabel ("   USER OR USERNAME");
-        jcomp5 = new JLabel ("    PASSWORD");
-        jcomp6 = new JLabel ("  WEBSITE");
-        jcomp7 = new JTextField (5);
-        jcomp8 = new JTextField (5);
-        jcomp9 = new JTextField (5);
-        jcomp10 = new JList (jcomp10Items);
-        // Add image to the GUI
-        ImageIcon imageIcon = new ImageIcon("image.png");
-        JLabel imageLabel = new JLabel(imageIcon);
-        add(imageLabel);
-        imageLabel.setBounds(30, 20, 600, 950);
+        // adjust size and set layout
+        setPreferredSize(new Dimension(669, 600));
+        setLayout(null);
 
-        //adjust size and set layout
-        setPreferredSize (new Dimension (669, 416));
-        setLayout (null);
+        // add components
+        add(addButton);
+        add(deleteButton);
+        add(updateButton);
+        add(userLabel);
+        add(passwordLabel);
+        add(websiteLabel);
+        add(userTextField);
+        add(passwordTextField);
+        add(websiteTextField);
+        add(passwordList);
+        websiteTextField.setBounds(145, 145, 415, 30);
+passwordList.setBounds(25, 230, 615, 150);
 
-        //add components
-        add (jcomp1);
-        add (jcomp2);
-        add (jcomp3);
-        add (jcomp4);
-        add (jcomp5);
-        add (jcomp6);
-        add (jcomp7);
-        add (jcomp8);
-        add (jcomp9);
-        add (jcomp10);
+// Add image to the GUI
+ImageIcon imageIcon = new ImageIcon("image.png");
+JLabel imageLabel = new JLabel(imageIcon);
+add(imageLabel);
+imageLabel.setBounds(30, 20, 600, 950);
 
-        //set component bounds (only needed by Absolute Positioning)
+        // set component bounds (only needed by Absolute Positioning)
         addButton.setBounds(145, 200, 100, 25);
         deleteButton.setBounds(310, 200, 100, 25);
         updateButton.setBounds(460, 200, 100, 25);
@@ -68,14 +69,50 @@ public class MyPanel extends JPanel {
         addButton.setBackground(new Color(0, 128, 0)); // green color
         deleteButton.setBackground(new Color(255, 0, 0)); // red color
         updateButton.setBackground(new Color(255, 192, 203)); // sky blue color
+
+        // add action listeners for buttons
+        addButton.addActionListener(e -> addPassword());
+        deleteButton.addActionListener(e -> deletePassword());
+        updateButton.addActionListener(e -> updatePassword());
     }
 
+    private void addPassword() {
+        String user = userTextField.getText();
+        String password = passwordTextField.getText();
+        String website = websiteTextField.getText();
+        if (!user.isEmpty() && !password.isEmpty() && !website.isEmpty()) {
+            passwordListModel.addElement("USER: " + user + " | "+"PASSWORD: " + password + " | " + "WEBSITE: " + website);
+            userTextField.setText("");
+            passwordTextField.setText("");
+            websiteTextField.setText("");
+        }
+    }
 
-    public static void main (String[] args) {
-        JFrame frame = new JFrame ("MyPanel");
-        frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add (new MyPanel());
+    private void deletePassword() {
+        int selectedIndex = passwordList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            passwordListModel.remove(selectedIndex);
+        }
+    }
+
+    private void updatePassword() {
+        int selectedIndex = passwordList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            String user = userTextField.getText();
+            String password = passwordTextField.getText();
+            String website = websiteTextField.getText();
+            if (!user.isEmpty() && !password.isEmpty() && !website.isEmpty()) {
+                passwordListModel.set(selectedIndex, user + " | " + password + " | " + website);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Password Manager");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(new page());
         frame.pack();
-        frame.setVisible (true);
+        frame.setVisible(true);
     }
 }
+
