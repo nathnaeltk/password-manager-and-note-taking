@@ -24,16 +24,25 @@ public class RegistrationPage extends JPanel {
 
     public RegistrationPage() {
         jcomp1 = new JTextArea(2, 30);
-        jcomp2 = new JPasswordField(30);
-        Dimension preferredSize = jcomp2.getPreferredSize();
-        preferredSize.height *= 2; // Doubling the height
-        jcomp2.setPreferredSize(preferredSize);
-        jcompname = new JTextArea(2, 30);
-        jlabelname = new JLabel("Name: ");
-        jcomp3 = new JLabel("Username: ");
-        jcomp4 = new JLabel("Password: ");
-        jcomp6 = new JButton("Login");
-        jcomp7 = new JButton("Register");
+jcomp2 = new JPasswordField(30);
+Dimension preferredSize = jcomp2.getPreferredSize();
+preferredSize.height *= 2; // Doubling the height
+jcomp2.setPreferredSize(preferredSize);
+jcompname = new JTextArea(2, 30);
+jlabelname = new JLabel("Name: ");
+jcomp3 = new JLabel("Username: ");
+jcomp4 = new JLabel("Password: ");
+
+jcomp6 = new JButton("Login");
+jcomp6.setBackground(new Color(0, 128, 0)); // Set the login button to green
+jcomp7 = new JButton("Register");
+jcomp7.setBackground(new Color(0, 128, 0)); // Set the register button to green
+
+// Set the background of JTextArea and JPasswordField to sky blue
+Color skyBlue = new Color(135, 206, 235);
+jcomp1.setBackground(skyBlue);
+jcomp2.setBackground(skyBlue);
+jcompname.setBackground(skyBlue);
 
         ImageIcon imageIcon = new ImageIcon("image.png");
         imageLabel = new JLabel(imageIcon);
