@@ -3,7 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class page extends JPanel {
+public class PasswordManagerPanel extends JPanel {
     private DefaultListModel<String> passwordListModel;
     private JList<String> passwordList;
     private JButton addButton;
@@ -16,7 +16,7 @@ public class page extends JPanel {
     private JTextField passwordTextField;
     private JTextField websiteTextField;
 
-    public page() {
+    public PasswordManagerPanel() {
         // construct components
         addButton = new JButton("ADD");
         deleteButton = new JButton("DELETE");
@@ -76,43 +76,54 @@ imageLabel.setBounds(30, 20, 600, 950);
         updateButton.addActionListener(e -> updatePassword());
     }
 
-    private void addPassword() {
-        String user = userTextField.getText();
-        String password = passwordTextField.getText();
-        String website = websiteTextField.getText();
-        if (!user.isEmpty() && !password.isEmpty() && !website.isEmpty()) {
-            passwordListModel.addElement("USER: " + user + " | "+"PASSWORD: " + password + " | " + "WEBSITE: " + website);
-            userTextField.setText("");
-            passwordTextField.setText("");
-            websiteTextField.setText("");
-        }
-    }
-
-    private void deletePassword() {
-        int selectedIndex = passwordList.getSelectedIndex();
-        if (selectedIndex != -1) {
-            passwordListModel.remove(selectedIndex);
-        }
-    }
-
-    private void updatePassword() {
-        int selectedIndex = passwordList.getSelectedIndex();
-        if (selectedIndex != -1) {
+   private void addPassword() {
+        try {
             String user = userTextField.getText();
             String password = passwordTextField.getText();
             String website = websiteTextField.getText();
             if (!user.isEmpty() && !password.isEmpty() && !website.isEmpty()) {
-                passwordListModel.set(selectedIndex, user + " | " + password + " | " + website);
+                passwordListModel.addElement("USER: " + user + " | " + "PASSWORD: " + password + " | " + "WEBSITE: " + website);
+                userTextField.setText("");
+                passwordTextField.setText("");
+                websiteTextField.setText("");
             }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception to the console or handle it as required
+        }
+    }
+
+    private void deletePassword() {
+        try {
+            int selectedIndex = passwordList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                passwordListModel.remove(selectedIndex);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception to the console or handle it as required
+        }
+    }
+
+    private void updatePassword() {
+        try {
+            int selectedIndex = passwordList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                String user = userTextField.getText();
+                String password = passwordTextField.getText();
+                String website = websiteTextField.getText();
+                if (!user.isEmpty() && !password.isEmpty() && !website.isEmpty()) {
+                    passwordListModel.set(selectedIndex, "USER: " + user + " | " + "PASSWORD: " + password + " | " + "WEBSITE: " + website);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception to the console or handle it as required
         }
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Password Manager");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(new page());
+        frame.getContentPane().add(new PasswordManagerPanel());
         frame.pack();
         frame.setVisible(true);
     }
 }
-
