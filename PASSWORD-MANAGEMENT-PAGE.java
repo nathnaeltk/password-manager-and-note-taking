@@ -33,6 +33,11 @@ public class MyPanel extends JPanel {
         jcomp8 = new JTextField (5);
         jcomp9 = new JTextField (5);
         jcomp10 = new JList (jcomp10Items);
+        // Add image to the GUI
+        ImageIcon imageIcon = new ImageIcon("image.png");
+        JLabel imageLabel = new JLabel(imageIcon);
+        add(imageLabel);
+        imageLabel.setBounds(30, 20, 600, 950);
 
         //adjust size and set layout
         setPreferredSize (new Dimension (669, 416));
