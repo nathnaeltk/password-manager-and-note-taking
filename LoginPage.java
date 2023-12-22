@@ -67,6 +67,19 @@ public class LoginPage extends JPanel {
         add(imageLabel, BorderLayout.NORTH);
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+        // Construct components
+        // Set background colors
+        Color skyBlue = new Color(135, 206, 235); // RGB color for sky blue
+        Color green = new Color(0, 128, 0); // RGB color for green
+
+        setBackground(skyBlue); // Set the background color of the main panel to sky blue
+        inputPanel.setBackground(skyBlue); // Set the background color of the input panel to sky blue
+        buttonPanel.setBackground(skyBlue); // Set the background color of the button panel to sky blue
+        registrationPanel.setBackground(skyBlue); // Set the background color of the registration panel to sky blue
+
+        // Set button colors
+        jcomp6.setBackground(green); // Set the login button color to green
+        jcomp7.setBackground(green); // Set the register button color to green
 
         // login function
         jcomp6.addActionListener(new ActionListener() {
