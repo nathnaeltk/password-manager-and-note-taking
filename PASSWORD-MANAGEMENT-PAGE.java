@@ -51,16 +51,20 @@ public class MyPanel extends JPanel {
         add (jcomp10);
 
         //set component bounds (only needed by Absolute Positioning)
-        jcomp1.setBounds (145, 200, 100, 25);
-        jcomp2.setBounds (310, 200, 100, 25);
-        jcomp3.setBounds (460, 200, 100, 25);
-        jcomp4.setBounds (25, 70, 105, 30);
-        jcomp5.setBounds (20, 110, 100, 25);
-        jcomp6.setBounds (30, 145, 100, 25);
-        jcomp7.setBounds (145, 70, 415, 30);
-        jcomp8.setBounds (145, 105, 415, 30);
-        jcomp9.setBounds (145, 145, 415, 30);
-        jcomp10.setBounds (145, 255, 410, 120);
+        addButton.setBounds(145, 200, 100, 25);
+        deleteButton.setBounds(310, 200, 100, 25);
+        updateButton.setBounds(460, 200, 100, 25);
+        userLabel.setBounds(25, 70, 105, 30);
+        passwordLabel.setBounds(20, 110, 100, 25);
+        websiteLabel.setBounds(30, 145, 100, 25);
+        userTextField.setBounds(145, 70, 415, 30);
+        passwordTextField.setBounds(145, 105, 415, 30);
+        websiteTextField.setBounds(145, 145, 415, 30);
+        passwordList.setBounds(145, 255, 410, 120);
+        setBackground(new Color(135, 206, 235));
+        addButton.setBackground(new Color(0, 128, 0)); // green color
+        deleteButton.setBackground(new Color(255, 0, 0)); // red color
+        updateButton.setBackground(new Color(255, 192, 203)); // sky blue color
     }
 
 
