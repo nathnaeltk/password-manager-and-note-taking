@@ -73,6 +73,17 @@ public class PasswordsManager extends JPanel {
         jcomp11.setBounds(495, 285, 100, 25);
         jcomp12.setBounds(495, 40, 100, 25);
         jcomp13.setBounds(390, 40, 100, 25);
+        setBackground(new Color(190, 203, 226)); // Sky Blue color
+
+
+        // colors just for button elements
+        Color buttonColor = new Color(220, 140, 34); 
+        jcomp11d.setBackground(buttonColor);
+        jcomp11b.setBackground(buttonColor);
+        jcomp11.setBackground(buttonColor);
+        jcomp12.setBackground(buttonColor);
+        jcomp13.setBackground(buttonColor);
+
 
         // Load and add the image
         ImageIcon imageIcon = new ImageIcon("image.png");

@@ -109,10 +109,12 @@ public class MainPage extends JPanel {
 
        // Set button background color
        Color buttonColor = new Color(220, 140, 34); 
-        jcomp5.setBackground(buttonColor);
-        jcomp6.setBackground(buttonColor);
-        jcomp7.setBackground(buttonColor);
-        jcomp8.setBackground(buttonColor);
+       Color noteColor = new Color(242, 236, 183);
+        // jcomp5.setBackground(buttonColor);
+        // jcomp6.setBackground(buttonColor);
+        // jcomp7.setBackground(buttonColor);
+        // jcomp8.setBackground(buttonColor);
+        jcomp11.setBackground(noteColor);
 
         // Add ListSelectionListener to noteList
         noteList.addListSelectionListener(new ListSelectionListener() {
