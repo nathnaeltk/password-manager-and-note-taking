@@ -1,5 +1,20 @@
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.awt.event.ActionEvent;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 public class PasswordsManager extends JPanel {
     private JList<String> jcomp1;
@@ -20,10 +35,19 @@ public class PasswordsManager extends JPanel {
 
     public PasswordsManager() {
         //construct preComponents
-        String[] jcomp1Items = {"Website Account 1", "Website Account 1", "Website Account 1", "Website Account 1", "Website Account 1", "Website Account 1", "Website Account 1", "Website Account 1", "Website Account 1"};
+        Set<String> websiteNames = loadWebsiteNamesFromJson("Password.json");
+        String[] jcomp1Items = websiteNames.toArray(new String[0]);
 
         //construct components
         jcomp1 = new JList<>(jcomp1Items);
+        jcomp1.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    displayPasswordDetails();
+                }
+            }
+        });
         jcomp2d = new JTextField(5);
         jcomp11d = new JButton("Search");
         jcomp2 = new JTextField(5);
@@ -35,6 +59,12 @@ public class PasswordsManager extends JPanel {
         jcomp10 = new JLabel("Save a New Password");
         jcomp11b = new JButton("Generate Password");
         jcomp11 = new JButton("Save");
+        jcomp11.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                save();
+            }
+        });
         jcomp12 = new JButton("Logout");
         jcomp13 = new JButton("Notes");
 
@@ -94,6 +124,113 @@ public class PasswordsManager extends JPanel {
         add(imageLabel);
         imageLabel.setBounds(25, -20, 200, 200); // Adjust position as needed
     }
+
+    private void displayPasswordDetails() {
+        // Get the selected website name
+        String selectedWebsite = jcomp1.getSelectedValue();
+
+        if (selectedWebsite != null) {
+            try {
+                File file = new File("Password.json");
+                if (file.exists() && file.length() > 0) {
+                    FileReader fileReader = new FileReader(file);
+
+                    // Use TypeToken to handle generic types during deserialization
+                    TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
+                    HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, typeToken.getType());
+                    fileReader.close();
+
+                    // Get the details for the selected website
+                    HashMap<String, String> websiteDetails = data.get(selectedWebsite);
+                    if (websiteDetails != null) {
+                        String email = websiteDetails.get("email");
+                        String password = websiteDetails.get("password");
+
+                        // Display details in a pop-up message
+                        String message = "Website: " + selectedWebsite + "\n"
+                                + "Email: " + email + "\n"
+                                + "Password: " + password;
+                        JOptionPane.showMessageDialog(this, message, "Password Details", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        }
+
+    private Set<String> loadWebsiteNamesFromJson(String filePath) {
+        try {
+            File file = new File(filePath);
+            if (file.exists() && file.length() > 0) {
+                FileReader fileReader = new FileReader(file);
+
+                // Use TypeToken to handle generic types during deserialization
+                TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
+                HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, typeToken.getType());
+                fileReader.close();
+
+                return data.keySet(); // Return the set of website names
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return new HashSet<>(); // Return an empty set if there is an issue
+    }
+
+    public void save() {
+    String website = jcomp2.getText();
+    char[] password = jcomp7.getPassword();
+    String email = jcomp5.getText();
+    HashMap<String, HashMap<String, String>> new_data = new HashMap<>();
+    HashMap<String, String> innerMap = new HashMap<>();
+    innerMap.put("email", email);
+    innerMap.put("password", String.valueOf(password));
+    new_data.put(website, innerMap);
+
+    if (website.length() == 0 || password.length == 0) {
+        JOptionPane.showMessageDialog(this, "Please make sure you haven't left any fields empty!",
+                "Oops", JOptionPane.INFORMATION_MESSAGE);
+    } else {
+        try {
+            File file = new File("Password.json");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            // Reading old data
+            FileReader fileReader = new FileReader(file);
+            HashMap<String, HashMap<String, String>> data = new HashMap<>();
+            if (file.length() > 0) {
+                data = new Gson().fromJson(fileReader, HashMap.class);
+            }
+            fileReader.close();
+
+            // Updating old data with new data
+            data.putAll(new_data);
+
+            // Saving the updated data
+            FileWriter fileWriter = new FileWriter(file);
+            new GsonBuilder().setPrettyPrinting().create().toJson(data, fileWriter);
+            fileWriter.flush();
+            fileWriter.close();
+
+            // Reload website names from the updated JSON file
+            Set<String> websiteNames = loadWebsiteNamesFromJson("Password.json");
+            String[] jcomp1Items = websiteNames.toArray(new String[0]);
+
+            // Update the JList
+            jcomp1.setListData(jcomp1Items);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        jcomp2.setText("");
+        // jcomp8.setText("");
+        jcomp7.setText("");
+        jcomp5.setText("");
+    }
+}
+
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("PasswordsManager");
