@@ -3,7 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class PasswordManagerPanel extends JPanel {
+public class java extends JPanel {
     private DefaultListModel<String> passwordListModel;
     private JList<String> passwordList;
     private JButton addButton;
@@ -16,7 +16,7 @@ public class PasswordManagerPanel extends JPanel {
     private JTextField passwordTextField;
     private JTextField websiteTextField;
 
-    public PasswordManagerPanel() {
+    public java() {
         // construct components
         addButton = new JButton("ADD");
         deleteButton = new JButton("DELETE");
@@ -73,7 +73,26 @@ imageLabel.setBounds(30, 20, 600, 950);
         // add action listeners for buttons
         addButton.addActionListener(e -> addPassword());
         deleteButton.addActionListener(e -> deletePassword());
-        updateButton.addActionListener(e -> updatePassword());
+        updateButton.addActionListener(e -> updatePassword());passwordList.addListSelectionListener(e -> displayInputFields());}
+
+ private void displayInputFields() {
+    if (!passwordList.getValueIsAdjusting()) {
+        int selectedIndex = passwordList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            String selectedValue = passwordListModel.getElementAt(selectedIndex).toString();
+            // Assuming the format "USER: username | PASSWORD: password | WEBSITE: website"
+            String[] parts = selectedValue.split(" \\| ");
+           if (parts.length == 3) {                userTextField.setText(parts[0].substring(parts[0].indexOf(": ") + 2));
+                passwordTextField.setText(parts[1].substring(parts[1].indexOf(": ") + 2));
+                websiteTextField.setText(parts[2].substring(parts[2].indexOf(": ") + 2));
+            }
+ } else {
+            userTextField.setText("Enter username");
+            passwordTextField.setText("Enter password");
+            websiteTextField.setText("Enter website");
+        }
+    }
+
     }
 
    private void addPassword() {
@@ -118,11 +137,12 @@ imageLabel.setBounds(30, 20, 600, 950);
             e.printStackTrace(); // Log the exception to the console or handle it as required
         }
     }
+        
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Password Manager");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(new PasswordManagerPanel());
+        frame.getContentPane().add(new java());
         frame.pack();
         frame.setVisible(true);
     }
