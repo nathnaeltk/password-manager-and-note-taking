@@ -50,6 +50,12 @@ public class PasswordsManager extends JPanel {
         });
         jcomp2d = new JTextField(5);
         jcomp11d = new JButton("Search");
+        jcomp11d.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchWebsite();
+            }
+        });
         jcomp2 = new JTextField(5);
         jcomp3 = new JLabel("Website Name");
         jcomp4 = new JLabel("Email or Username");
@@ -125,6 +131,43 @@ public class PasswordsManager extends JPanel {
         imageLabel.setBounds(25, -20, 200, 200); // Adjust position as needed
     }
 
+    private void searchWebsite() {
+        String enteredWebsite = capitalize(jcomp2d.getText().trim());
+
+        if (!enteredWebsite.isEmpty()) {
+            try {
+                File file = new File("Password.json");
+                if (file.exists() && file.length() > 0) {
+                    FileReader fileReader = new FileReader(file);
+
+                    // Use TypeToken to handle generic types during deserialization
+                    TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
+                    HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, typeToken.getType());
+                    fileReader.close();
+
+                    // Check if the entered website exists in the JSON data
+                    if (data.containsKey(enteredWebsite)) {
+                        // Website found, display details in a pop-up message
+                        HashMap<String, String> websiteDetails = data.get(enteredWebsite);
+                        String email = websiteDetails.get("email");
+                        String password = websiteDetails.get("password");
+
+                        String message = "Website: " + enteredWebsite + "\n"
+                                + "Email: " + email + "\n"
+                                + "Password: " + password;
+                        JOptionPane.showMessageDialog(this, message, "Password Details", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        // Website not found, display a message
+                        JOptionPane.showMessageDialog(this, "Website not found! please make sure that their is no typing error", "Search Result", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+
     private void displayPasswordDetails() {
         // Get the selected website name
         String selectedWebsite = jcomp1.getSelectedValue();
@@ -179,57 +222,65 @@ public class PasswordsManager extends JPanel {
     }
 
     public void save() {
-    String website = jcomp2.getText();
-    char[] password = jcomp7.getPassword();
-    String email = jcomp5.getText();
-    HashMap<String, HashMap<String, String>> new_data = new HashMap<>();
-    HashMap<String, String> innerMap = new HashMap<>();
-    innerMap.put("email", email);
-    innerMap.put("password", String.valueOf(password));
-    new_data.put(website, innerMap);
-
-    if (website.length() == 0 || password.length == 0) {
-        JOptionPane.showMessageDialog(this, "Please make sure you haven't left any fields empty!",
-                "Oops", JOptionPane.INFORMATION_MESSAGE);
-    } else {
-        try {
-            File file = new File("Password.json");
-            if (!file.exists()) {
-                file.createNewFile();
+        String website = jcomp2.getText().trim();
+        char[] password = jcomp7.getPassword();
+        String email = jcomp5.getText().trim();
+        HashMap<String, HashMap<String, String>> new_data = new HashMap<>();
+        HashMap<String, String> innerMap = new HashMap<>();
+        innerMap.put("email", email);
+        innerMap.put("password", String.valueOf(password));
+        new_data.put(capitalize(website), innerMap);
+    
+        if (website.length() == 0 || password.length == 0) {
+            JOptionPane.showMessageDialog(this, "Please make sure you haven't left any fields empty!",
+                    "Oops", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            try {
+                File file = new File("Password.json");
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+    
+                // Reading old data
+                FileReader fileReader = new FileReader(file);
+                HashMap<String, HashMap<String, String>> data = new HashMap<>();
+                if (file.length() > 0) {
+                    data = new Gson().fromJson(fileReader, HashMap.class);
+                }
+                fileReader.close();
+    
+                // Updating old data with new data
+                data.putAll(new_data);
+    
+                // Saving the updated data
+                FileWriter fileWriter = new FileWriter(file);
+                new GsonBuilder().setPrettyPrinting().create().toJson(data, fileWriter);
+                fileWriter.flush();
+                fileWriter.close();
+    
+                // Reload website names from the updated JSON file
+                Set<String> websiteNames = loadWebsiteNamesFromJson("Password.json");
+                String[] jcomp1Items = websiteNames.toArray(new String[0]);
+    
+                // Update the JList
+                jcomp1.setListData(jcomp1Items);
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-
-            // Reading old data
-            FileReader fileReader = new FileReader(file);
-            HashMap<String, HashMap<String, String>> data = new HashMap<>();
-            if (file.length() > 0) {
-                data = new Gson().fromJson(fileReader, HashMap.class);
-            }
-            fileReader.close();
-
-            // Updating old data with new data
-            data.putAll(new_data);
-
-            // Saving the updated data
-            FileWriter fileWriter = new FileWriter(file);
-            new GsonBuilder().setPrettyPrinting().create().toJson(data, fileWriter);
-            fileWriter.flush();
-            fileWriter.close();
-
-            // Reload website names from the updated JSON file
-            Set<String> websiteNames = loadWebsiteNamesFromJson("Password.json");
-            String[] jcomp1Items = websiteNames.toArray(new String[0]);
-
-            // Update the JList
-            jcomp1.setListData(jcomp1Items);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            jcomp2.setText("");
+            jcomp2d.setText("");
+            jcomp7.setText("");
+            jcomp5.setText("");
         }
-        jcomp2.setText("");
-        // jcomp8.setText("");
-        jcomp7.setText("");
-        jcomp5.setText("");
     }
-}
+    
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1).toLowerCase();
+    }
+    
 
 
     public static void main(String[] args) {
