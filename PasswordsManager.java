@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
@@ -64,6 +66,12 @@ public class PasswordsManager extends JPanel {
         jcomp7 = new JPasswordField(5);
         jcomp10 = new JLabel("Save a New Password");
         jcomp11b = new JButton("Generate Password");
+        jcomp11b.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                generatePassword();
+            }
+        });
         jcomp11 = new JButton("Save");
         jcomp11.addActionListener(new ActionListener() {
             @Override
@@ -130,6 +138,31 @@ public class PasswordsManager extends JPanel {
         add(imageLabel);
         imageLabel.setBounds(25, -20, 200, 200); // Adjust position as needed
     }
+
+    private void generatePassword() {
+        int passwordLength = 12; // You can adjust the length as needed
+        String generatedPassword = generateStrongPassword(passwordLength);
+        jcomp7.setText(generatedPassword);
+    }
+
+    private String generateStrongPassword(int length) {
+        String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowercase = "abcdefghijklmnopqrstuvwxyz";
+        String digits = "0123456789";
+        String specialChars = "!@#$%^&*()-=_+[]{}|;:'\",.<>?/";
+
+        String allChars = uppercase + lowercase + digits + specialChars;
+        Random random = new SecureRandom();
+
+        StringBuilder password = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(allChars.length());
+            password.append(allChars.charAt(index));
+        }
+
+        return password.toString();
+    }
+
 
     private void searchWebsite() {
         String enteredWebsite = capitalize(jcomp2d.getText().trim());
