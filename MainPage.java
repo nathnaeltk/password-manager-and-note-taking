@@ -105,10 +105,10 @@ public class MainPage extends JPanel {
         jcomp10.setBounds(545, 80, 100, 25);
         jcomp11.setBounds(220, 115, 420, 200);
         jcomp12.setBounds(60, 90, 60, 25);
-        setBackground(new Color(135, 206, 235)); // Sky Blue color
+        setBackground(new Color(190, 203, 226)); // Sky Blue color
 
        // Set button background color
-       Color buttonColor = new Color(0, 128, 0); // Green color
+       Color buttonColor = new Color(220, 140, 34); 
         jcomp5.setBackground(buttonColor);
         jcomp6.setBackground(buttonColor);
         jcomp7.setBackground(buttonColor);

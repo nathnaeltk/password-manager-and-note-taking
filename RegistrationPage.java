@@ -32,11 +32,11 @@ jcompname = new JTextArea(2, 30);
 jlabelname = new JLabel("Name: ");
 jcomp3 = new JLabel("Username: ");
 jcomp4 = new JLabel("Password: ");
-setBackground(new Color(135, 206, 235));
+setBackground(new Color(190, 203, 226));
 jcomp6 = new JButton("Login");
-jcomp6.setBackground(new Color(0, 128, 0)); // Set the login button to green
+jcomp6.setBackground(new Color(220, 140, 34)); 
 jcomp7 = new JButton("Register");
-jcomp7.setBackground(new Color(0, 128, 0)); // Set the register button to green
+jcomp7.setBackground(new Color(220, 140, 34)); 
 
 // Set the background of JTextArea and JPasswordField to sky blue
 

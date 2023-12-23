@@ -3,7 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class java extends JPanel {
+public class Pmp extends JPanel {
     private DefaultListModel<String> passwordListModel;
     private JList<String> passwordList;
     private JButton addButton;

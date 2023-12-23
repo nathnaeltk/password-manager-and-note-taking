@@ -1,5 +1,6 @@
 {
     "java.project.referencedLibraries": [
-        "lib/gson-2.10.1.jar" 
+        "lib/gson-2.10.1.jar" , 
+        "lib/junit-4.12.jar" ,
     ]
 }
