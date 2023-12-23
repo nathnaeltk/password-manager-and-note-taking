@@ -3,7 +3,6 @@ import javax.swing.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -177,13 +176,10 @@ private void displayNoteForSelectedTitle() {
  public void save() {
         String title = jcomp9.getText();
         String note = jcomp11.getText();
-        // String password = passwordEntry.getText();
         HashMap<String, HashMap<String, String>> new_data = new HashMap<>();
         HashMap<String, String> innerMap = new HashMap<>();
         innerMap.put("note", note);
-        // innerMap.put("password", password);
         new_data.put(title, innerMap);
-        // || password.length() == 0
 
         if (title.length() == 0 ) {
             JOptionPane.showMessageDialog(this, "Please make sure you haven't left any fields empty!",

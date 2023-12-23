@@ -13,12 +13,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class PasswordsManager extends JPanel {
+    // Components declaration
     private JList<String> jcomp1;
     private JTextField jcomp2d;
     private JButton jcomp11d;
@@ -42,6 +42,7 @@ public class PasswordsManager extends JPanel {
 
         //construct components
         jcomp1 = new JList<>(jcomp1Items);
+        // Action listener
         jcomp1.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -52,6 +53,7 @@ public class PasswordsManager extends JPanel {
         });
         jcomp2d = new JTextField(5);
         jcomp11d = new JButton("Search");
+        // Action listeners
         jcomp11d.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,6 +68,7 @@ public class PasswordsManager extends JPanel {
         jcomp7 = new JPasswordField(5);
         jcomp10 = new JLabel("Save a New Password");
         jcomp11b = new JButton("Generate Password");
+        // Action listeners
         jcomp11b.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,6 +76,7 @@ public class PasswordsManager extends JPanel {
             }
         });
         jcomp11 = new JButton("Save");
+        // Action listeners
         jcomp11.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,12 +144,14 @@ public class PasswordsManager extends JPanel {
     }
 
     private void generatePassword() {
-        int passwordLength = 12; // You can adjust the length as needed
+        // Generate a strong password and set it in the password field
+        int passwordLength = 12; 
         String generatedPassword = generateStrongPassword(passwordLength);
         jcomp7.setText(generatedPassword);
     }
 
     private String generateStrongPassword(int length) {
+        // Generate a random strong password
         String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lowercase = "abcdefghijklmnopqrstuvwxyz";
         String digits = "0123456789";
@@ -165,6 +171,7 @@ public class PasswordsManager extends JPanel {
 
 
     private void searchWebsite() {
+        // Search for the entered website in the JSON data
         String enteredWebsite = capitalize(jcomp2d.getText().trim());
 
         if (!enteredWebsite.isEmpty()) {
