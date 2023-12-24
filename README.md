@@ -17,6 +17,9 @@
 * Notes are saved securely and can be accessed whenever needed.
   ### Tools used:
   ##### Java programming language, Junit testing library, Javafx GUI
+  #### Installation:
+  ##### 1. Clone the repository: git clone https://github.com/nathnaeltk/password-manager-and-note-taking.git
+  ##### 2. Navigate to project directory
 ###### Developed by: The Misfits
  
   
