@@ -139,8 +139,8 @@ public class RegistrationPage extends JPanel {
     }
 
     public void addLoginPageContent() {
-        abcd loginPage = new abcd(); // Instantiate the LoginPage
-        add(loginPage); // Add the LoginPage to the RegistrationPage panel
+        abcd loginPage = new abcd(); 
+        add(loginPage); // calling the add method
     }
 
     public void saveUsersToJson() {
