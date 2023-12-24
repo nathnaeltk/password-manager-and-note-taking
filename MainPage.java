@@ -104,9 +104,7 @@ public class MainPage extends JPanel {
                 openLoginPage();
             }
         });
-
-
-        // add components
+        
         add(Options);
         add(scrollPane);
         add(jcomp5);
