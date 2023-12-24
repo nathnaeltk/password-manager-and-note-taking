@@ -8,7 +8,7 @@
   * Users can create and store unique passwords for different accounts.
   * The application ensures the security of passwords by encrypting them before storing.
   * Users can retrieve passwords for specific accounts when needed.
-  * Passwords can be updated or deleted as required.
+  
  ##### 2.Note Taking:
 
 * Users can create and save notes on various topics.
