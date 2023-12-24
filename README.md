@@ -19,7 +19,7 @@
   ##### Java programming language, Junit testing library, Javafx GUI
   #### Installation:
   ##### 1. Clone the repository: git clone https://github.com/nathnaeltk/password-manager-and-note-taking.git
-  ##### 2. Navigate to project directory
+  ##### 2. Navigate to project directory: cd Astawash
 ###### Developed by: The Misfits
  
   
