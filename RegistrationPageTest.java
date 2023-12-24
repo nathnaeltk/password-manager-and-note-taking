@@ -26,7 +26,7 @@ class RegistrationPageTest
         }
 
         @Test
-        //user cannot register with an existing username
+        //this makes user to donot register with an existing username
         public void test_existing_username ()
         {
             RegistrationPage registrationPage = new RegistrationPage();
@@ -34,7 +34,6 @@ class RegistrationPageTest
             registrationPage.jcomp1.setText("johndoe");
             registrationPage.jcomp2.setText("password");
 
-            // Add a user with the same username
             User existingUser = new User("Jane Smith", "johndoe", "password123");
             registrationPage.userList.add(existingUser);
 
