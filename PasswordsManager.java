@@ -18,7 +18,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class PasswordsManager extends JPanel {
-    // Components declaration
+    // this is used to make a component declaration
     private JList<String> jcomp1;
     private JTextField jcomp2d;
     private JButton jcomp11d;
@@ -36,13 +36,12 @@ public class PasswordsManager extends JPanel {
     private JLabel imageLabel; // New JLabel for the image
 
     public PasswordsManager() {
-        //construct preComponents
+        
         Set<String> websiteNames = loadWebsiteNamesFromJson("Password.json");
         String[] jcomp1Items = websiteNames.toArray(new String[0]);
 
-        //construct components
         jcomp1 = new JList<>(jcomp1Items);
-        // Action listener
+        
         jcomp1.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -86,11 +85,11 @@ public class PasswordsManager extends JPanel {
         jcomp12 = new JButton("Logout");
         jcomp13 = new JButton("Notes");
 
-        //adjust size and set layout
+        
         setPreferredSize(new Dimension(669, 368));
         setLayout(null);
 
-        //add components
+        //adding components
         add(jcomp1);
         add(jcomp2d);
         add(jcomp11d);
@@ -106,7 +105,6 @@ public class PasswordsManager extends JPanel {
         add(jcomp12);
         add(jcomp13);
 
-        //set component bounds (only needed by Absolute Positioning)
         jcomp1.setBounds(45, 140, 160, 175);
         jcomp2d.setBounds(220, 100, 265, 35);
         jcomp11d.setBounds(495, 105, 100, 25);
@@ -124,7 +122,6 @@ public class PasswordsManager extends JPanel {
         setBackground(new Color(190, 203, 226)); // Sky Blue color
 
 
-        // Add ActionListener to logout button
         jcomp12.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,7 +129,6 @@ public class PasswordsManager extends JPanel {
             }
         });
 
-        // Add listener for new note button
         jcomp13.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -141,7 +137,6 @@ public class PasswordsManager extends JPanel {
         });
 
 
-        // colors just for button elements
         Color buttonColor = new Color(220, 140, 34); 
         jcomp11d.setBackground(buttonColor);
         jcomp11b.setBackground(buttonColor);
@@ -150,7 +145,6 @@ public class PasswordsManager extends JPanel {
         jcomp13.setBackground(buttonColor);
 
 
-        // Load and add the image
         ImageIcon imageIcon = new ImageIcon("image.png");
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(253, 133, Image.SCALE_SMOOTH); // Adjust size as needed
@@ -161,7 +155,7 @@ public class PasswordsManager extends JPanel {
     }
 
     private void openLoginPage() {
-        // Instantiate LoginPage
+        // we instantiate the  LoginPage
         LoginPage loginPage = new LoginPage();
     
         // Create a new JFrame to contain the LoginPage window
@@ -194,25 +188,23 @@ public class PasswordsManager extends JPanel {
         // Set the content of the frame to the PasswordsManager instance
         mainPageFrame.getContentPane().add(mainPage);
     
-        // Adjust the frame properties and display it
         mainPageFrame.pack();
         mainPageFrame.setLocationRelativeTo(null); // Center the frame on the screen
         mainPageFrame.setVisible(true);
     
-        // Hide or dispose of the MainPage frame
         JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
-        mainFrame.setVisible(false); // Hides the MainPage frame
+        mainFrame.setVisible(false); 
     }
 
     private void generatePassword() {
-        // Generate a strong password and set it in the password field
+       //to generate a strong password
         int passwordLength = 12; 
         String generatedPassword = generateStrongPassword(passwordLength);
         jcomp7.setText(generatedPassword);
     }
 
     private String generateStrongPassword(int length) {
-        // Generate a random strong password
+    
         String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lowercase = "abcdefghijklmnopqrstuvwxyz";
         String digits = "0123456789";
@@ -232,7 +224,7 @@ public class PasswordsManager extends JPanel {
 
 
     private void searchWebsite() {
-        // Search for the entered website in the JSON data
+       
         String enteredWebsite = capitalize(jcomp2d.getText().trim());
 
         if (!enteredWebsite.isEmpty()) {
@@ -241,14 +233,14 @@ public class PasswordsManager extends JPanel {
                 if (file.exists() && file.length() > 0) {
                     FileReader fileReader = new FileReader(file);
 
-                    // Use TypeToken to handle generic types during deserialization
+                   
                     TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
                     HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, typeToken.getType());
                     fileReader.close();
 
-                    // Check if the entered website exists in the JSON data
+                   
                     if (data.containsKey(enteredWebsite)) {
-                        // Website found, display details in a pop-up message
+                       
                         HashMap<String, String> websiteDetails = data.get(enteredWebsite);
                         String email = websiteDetails.get("email");
                         String password = websiteDetails.get("password");
@@ -258,7 +250,7 @@ public class PasswordsManager extends JPanel {
                                 + "Password: " + password;
                         JOptionPane.showMessageDialog(this, message, "Password Details", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        // Website not found, display a message
+                        
                         JOptionPane.showMessageDialog(this, "Website not found! please make sure that their is no typing error", "Search Result", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
@@ -270,7 +262,7 @@ public class PasswordsManager extends JPanel {
 
 
     private void displayPasswordDetails() {
-        // Get the selected website name
+      
         String selectedWebsite = jcomp1.getSelectedValue();
 
         if (selectedWebsite != null) {
@@ -279,18 +271,17 @@ public class PasswordsManager extends JPanel {
                 if (file.exists() && file.length() > 0) {
                     FileReader fileReader = new FileReader(file);
 
-                    // Use TypeToken to handle generic types during deserialization
+                   
                     TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
                     HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, typeToken.getType());
                     fileReader.close();
 
-                    // Get the details for the selected website
                     HashMap<String, String> websiteDetails = data.get(selectedWebsite);
                     if (websiteDetails != null) {
                         String email = websiteDetails.get("email");
                         String password = websiteDetails.get("password");
 
-                        // Display details in a pop-up message
+                    
                         String message = "Website: " + selectedWebsite + "\n"
                                 + "Email: " + email + "\n"
                                 + "Password: " + password;
@@ -309,17 +300,16 @@ public class PasswordsManager extends JPanel {
             if (file.exists() && file.length() > 0) {
                 FileReader fileReader = new FileReader(file);
 
-                // Use TypeToken to handle generic types during deserialization
                 TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
                 HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, typeToken.getType());
                 fileReader.close();
 
-                return data.keySet(); // Return the set of website names
+                return data.keySet(); 
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return new HashSet<>(); // Return an empty set if there is an issue
+        return new HashSet<>(); 
     }
 
     public void save() {
@@ -342,7 +332,7 @@ public class PasswordsManager extends JPanel {
                     file.createNewFile();
                 }
     
-                // Reading old data
+            
                 FileReader fileReader = new FileReader(file);
                 HashMap<String, HashMap<String, String>> data = new HashMap<>();
                 if (file.length() > 0) {
@@ -350,20 +340,18 @@ public class PasswordsManager extends JPanel {
                 }
                 fileReader.close();
     
-                // Updating old data with new data
+                // this is used to update old data with new data
                 data.putAll(new_data);
     
-                // Saving the updated data
                 FileWriter fileWriter = new FileWriter(file);
                 new GsonBuilder().setPrettyPrinting().create().toJson(data, fileWriter);
                 fileWriter.flush();
                 fileWriter.close();
     
-                // Reload website names from the updated JSON file
                 Set<String> websiteNames = loadWebsiteNamesFromJson("Password.json");
                 String[] jcomp1Items = websiteNames.toArray(new String[0]);
     
-                // Update the JList
+                
                 jcomp1.setListData(jcomp1Items);
             } catch (IOException ex) {
                 ex.printStackTrace();
