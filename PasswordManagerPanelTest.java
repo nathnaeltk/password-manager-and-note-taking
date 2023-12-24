@@ -44,7 +44,6 @@ class PasswordManagerPanelTest
         assertEquals(0, panel.passwordListModel.size());
     }
 
-    //
     @Test
     public void test_user_cannot_add_password_with_one_field_filled() {
         PasswordManagerPanel panel = new PasswordManagerPanel();
