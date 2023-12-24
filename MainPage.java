@@ -80,8 +80,6 @@ public class MainPage extends JPanel {
         setPreferredSize(new Dimension(669, 368));
         setLayout(null);
 
-
-                // Add ActionListener to manage passwords button
         jcomp5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,7 +87,6 @@ public class MainPage extends JPanel {
             }
         });
 
-        // Add listener for new note button
         jcomp6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -97,7 +94,7 @@ public class MainPage extends JPanel {
             }
         });
 
-        // Add ActionListener to logout button
+        
         jcomp8.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -145,7 +142,7 @@ public class MainPage extends JPanel {
                 }
             }
         });
-        // This is to read data from file and populate the listModel
+        
         try {
             File file = new File(filePath);
             if (file.exists() && file.length() > 0) {
@@ -164,80 +161,74 @@ public class MainPage extends JPanel {
     }
 
     private void openMainPage() {
-        // Instantiate PasswordsManager
         MainPage mainPage = new MainPage();
     
-        // Create a new JFrame to contain the PasswordsManager window
         JFrame mainPageFrame = new JFrame("Astawash Dashboard");
-        mainPageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the PasswordsManager window
+        mainPageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // This close only the PasswordsManager window
     
-        // Set the content of the frame to the PasswordsManager instance
+       
         mainPageFrame.getContentPane().add(mainPage);
     
-        // Adjust the frame properties and display it
+   
         mainPageFrame.pack();
-        mainPageFrame.setLocationRelativeTo(null); // Center the frame on the screen
+        mainPageFrame.setLocationRelativeTo(null); 
         mainPageFrame.setVisible(true);
     
-        // Hide or dispose of the MainPage frame
-        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
-        mainFrame.setVisible(false); // Hides the MainPage frame
+        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); 
+        mainFrame.setVisible(false); 
     }
 
     private void openPasswordsManager() {
-        // Instantiate PasswordsManager
+       
         PasswordsManager passwordsManager = new PasswordsManager();
     
-        // Create a new JFrame to contain the PasswordsManager window
+        
         JFrame passwordsManagerFrame = new JFrame("Passwords Manager");
-        passwordsManagerFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the PasswordsManager window
+        passwordsManagerFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
     
-        // Set the content of the frame to the PasswordsManager instance
         passwordsManagerFrame.getContentPane().add(passwordsManager);
     
-        // Adjust the frame properties and display it
+        
         passwordsManagerFrame.pack();
-        passwordsManagerFrame.setLocationRelativeTo(null); // Center the frame on the screen
+        passwordsManagerFrame.setLocationRelativeTo(null);
         passwordsManagerFrame.setVisible(true);
     
-        // Hide or dispose of the MainPage frame
-        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
-        mainFrame.setVisible(false); // Hides the MainPage frame
+      
+        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        mainFrame.setVisible(false); 
     }
 
 
-    // Method to open LoginPage class
 private void openLoginPage() {
-    // Instantiate LoginPage
+   
     LoginPage loginPage = new LoginPage();
 
-    // Create a new JFrame to contain the LoginPage window
+    // To create a new JFrame to contain the LoginPage window
     JFrame loginFrame = new JFrame("Login Page");
     loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the LoginPage window
 
-    // Set the content of the frame to the LoginPage instance
+    
     loginFrame.getContentPane().add(loginPage);
 
-    // Adjust the frame properties and display it
     loginFrame.pack();
-    loginFrame.setLocationRelativeTo(null); // Center the frame on the screen
+    loginFrame.setLocationRelativeTo(null); 
     loginFrame.setVisible(true);
 
-    // Hide or dispose of the MainPage frame
-    JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
-    mainFrame.setVisible(false); // Hides the MainPage frame
-    // Alternatively, you can use mainFrame.dispose(); to close the MainPage frame
+    
+    JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); 
+    mainFrame.setVisible(false);
+   
 }
     
 
-// Method to read data from the file and return as a HashMap
+//This is a method to read data from the file and return as a HashMap
 private HashMap<String, HashMap<String, String>> readDataFromFile() {
     try {
         File file = new File(filePath);
         if (file.exists() && file.length() > 0) {
             FileReader fileReader = new FileReader(file);
 
-            // Use TypeToken to handle generic types during deserialization
+            
             TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
             return new Gson().fromJson(fileReader, typeToken.getType());
         }
