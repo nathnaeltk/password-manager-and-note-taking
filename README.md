@@ -1,7 +1,7 @@
-#  Yene-Password-Manager-and- Note-Taker
+#  Astawash-Password-Manager-and- Note-Taker
 
    ### Application to manage password and taking notes
-   #### Introduction: Welcome to Yene application! This is helpful and interesting application which helps to manage password and take notes. Yene application is a java-based application. As its name indicate, it helps to manage your own password and to take notes as you want.  It provides users with a secure and convenient way to manage their passwords and take notes. Yene application offers a user-friendly interface that allows users to store, retrieve, and update their passwords and notes easily.
+   #### Introduction: Welcome to Astawash application! This is helpful and interesting application which helps to manage password and take notes. Astawash application is a java-based application. As its name indicate, it helps to manage your own password and to take notes as you want.  It provides users with a secure and convenient way to manage their passwords and take notes. Astawash application offers a user-friendly interface that allows users to store, retrieve, and update their passwords and notes easily.
    ## Features
    ##### 1.Password Management:
 
@@ -23,6 +23,6 @@
 ###### Developed by: The Misfits
  
   
-#### Conclusion: This Yene Password Manager and Note Taker application provides users with a secure and convenient way to manage their passwords and take notes. With its user-friendly interface and robust functionality, users can easily store, retrieve, and update their passwords and notes. This application ensures the security of sensitive information by encrypting passwords and providing a secure storage mechanism. Whether you need to manage multiple passwords or keep track of important notes, the Password Manager and Note Taker is a reliable tool to simplify your digital life.
+#### Conclusion: This Astawash Password Manager and Note Taker application provides users with a secure and convenient way to manage their passwords and take notes. With its user-friendly interface and robust functionality, users can easily store, retrieve, and update their passwords and notes. This application ensures the security of sensitive information by encrypting passwords and providing a secure storage mechanism. Whether you need to manage multiple passwords or keep track of important notes, the Password Manager and Note Taker is a reliable tool to simplify your digital life.
 
 
