@@ -73,9 +73,6 @@ public class LoginPage extends JPanel {
         Color green = new Color(220, 140, 34); // RGB color for green
 
         setBackground(skyBlue); // Set the background color of the main panel to sky blue
-        inputPanel.setBackground(skyBlue); // Set the background color of the input panel to sky blue
-        buttonPanel.setBackground(skyBlue); // Set the background color of the button panel to sky blue
-        registrationPanel.setBackground(skyBlue); // Set the background color of the registration panel to sky blue
 
         // Set button colors
         jcomp6.setBackground(green); // Set the login button color to green
@@ -140,7 +137,7 @@ public class LoginPage extends JPanel {
         JFrame mainFrame = new JFrame("Main Page");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.getContentPane().add(mainPage);
-        mainFrame.setSize(669, 400);
+        mainFrame.setSize(669, 450);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
     }

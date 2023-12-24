@@ -124,6 +124,23 @@ public class PasswordsManager extends JPanel {
         setBackground(new Color(190, 203, 226)); // Sky Blue color
 
 
+        // Add ActionListener to logout button
+        jcomp12.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openLoginPage();
+            }
+        });
+
+        // Add listener for new note button
+        jcomp13.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openMainPage();
+            }
+        });
+
+
         // colors just for button elements
         Color buttonColor = new Color(220, 140, 34); 
         jcomp11d.setBackground(buttonColor);
@@ -141,6 +158,50 @@ public class PasswordsManager extends JPanel {
         imageLabel = new JLabel(scaledImageIcon);
         add(imageLabel);
         imageLabel.setBounds(25, -20, 200, 200); // Adjust position as needed
+    }
+
+    private void openLoginPage() {
+        // Instantiate LoginPage
+        LoginPage loginPage = new LoginPage();
+    
+        // Create a new JFrame to contain the LoginPage window
+        JFrame loginFrame = new JFrame("Login Page");
+        loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the LoginPage window
+    
+        // Set the content of the frame to the LoginPage instance
+        loginFrame.getContentPane().add(loginPage);
+    
+        // Adjust the frame properties and display it
+        loginFrame.pack();
+        loginFrame.setLocationRelativeTo(null); // Center the frame on the screen
+        loginFrame.setVisible(true);
+    
+        // Hide or dispose of the MainPage frame
+        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
+        mainFrame.setVisible(false); // Hides the MainPage frame
+        // Alternatively, you can use mainFrame.dispose(); to close the MainPage frame
+    }
+
+    
+    private void openMainPage() {
+        // Instantiate PasswordsManager
+        MainPage mainPage = new MainPage();
+    
+        // Create a new JFrame to contain the PasswordsManager window
+        JFrame mainPageFrame = new JFrame("Astawash Dashboard");
+        mainPageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the PasswordsManager window
+    
+        // Set the content of the frame to the PasswordsManager instance
+        mainPageFrame.getContentPane().add(mainPage);
+    
+        // Adjust the frame properties and display it
+        mainPageFrame.pack();
+        mainPageFrame.setLocationRelativeTo(null); // Center the frame on the screen
+        mainPageFrame.setVisible(true);
+    
+        // Hide or dispose of the MainPage frame
+        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
+        mainFrame.setVisible(false); // Hides the MainPage frame
     }
 
     private void generatePassword() {
