@@ -19,10 +19,10 @@ public class LoginPage extends JPanel {
     private JButton jcomp6;
     private JButton jcomp7;
     private JLabel imageLabel;
-    private JPanel registrationPanel; // Panel to hold registration content
+    private JPanel registrationPanel; 
 
     public LoginPage() {
-        // Construct components
+        
         jcomp1 = new JTextArea(2, 30);
         jcomp2 = new JTextArea(2, 30);
         jcomp3 = new JLabel("Username: ");
@@ -33,19 +33,13 @@ public class LoginPage extends JPanel {
         ImageIcon imageIcon = new ImageIcon("image.png");
         imageLabel = new JLabel(imageIcon);
 
-        // Set layout manager to BorderLayout for organized placement
         setLayout(new BorderLayout());
-
-        // Create panels to manage components' placement
         JPanel inputPanel = new JPanel(new GridBagLayout());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        registrationPanel = new JPanel(new BorderLayout()); // Initialize the registration panel
-
+        registrationPanel = new JPanel(new BorderLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(5, 5, 5, 5);
-
-        // Add components to inputPanel using GridBagLayout
         gbc.gridx = 0;
         gbc.gridy = 0;
         inputPanel.add(jcomp3, gbc);
@@ -59,37 +53,28 @@ public class LoginPage extends JPanel {
         gbc.gridy++;
         inputPanel.add(jcomp2, gbc);
 
-        // Add components to buttonPanel using FlowLayout
         buttonPanel.add(jcomp6);
         buttonPanel.add(jcomp7);
-
-        // Add components to main panel using BorderLayout
         add(imageLabel, BorderLayout.NORTH);
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
-        // Construct components
-        // Set background colors
-        Color skyBlue = new Color(190, 203, 226); // RGB color for sky blue
-        Color green = new Color(220, 140, 34); // RGB color for green
+        Color skyBlue = new Color(190, 203, 226); 
+        Color green = new Color(220, 140, 34); 
 
-        setBackground(skyBlue); // Set the background color of the main panel to sky blue
+        setBackground(skyBlue);
+        jcomp6.setBackground(green);
+        jcomp7.setBackground(green); 
 
-        // Set button colors
-        jcomp6.setBackground(green); // Set the login button color to green
-        jcomp7.setBackground(green); // Set the register button color to green
-
-        // login function
+       
         jcomp6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String enteredUsername = jcomp1.getText();
                 String enteredPassword = jcomp2.getText();
 
-                // Check credentials
                 if (checkCredentials(enteredUsername, enteredPassword)) {
-                    // If credentials match, close login page and open MainPage
                     JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(LoginPage.this);
-                    frame.dispose(); // Close login page
+                    frame.dispose(); 
                     openMainPage();
                 } else {
                     JOptionPane.showMessageDialog(LoginPage.this, "Invalid username or password!");
@@ -97,12 +82,9 @@ public class LoginPage extends JPanel {
             }
         });
 
-
-        // Add ActionListener to the Register button
         jcomp7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Clear the existing content and add the registration content
                 removeAll();
                 addRegistrationContent();
                 revalidate();
@@ -112,7 +94,6 @@ public class LoginPage extends JPanel {
     }
 
     private boolean checkCredentials(String username, String password) {
-        // Read users from JSON file and check credentials
         try (FileReader fileReader = new FileReader("users.json")) {
             Gson gson = new Gson();
             Type userListType = new TypeToken<List<User>>(){}.getType();
@@ -121,14 +102,14 @@ public class LoginPage extends JPanel {
             if (userList != null) {
                 for (User user : userList) {
                     if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                        return true; // Match found
+                        return true; 
                     }
                 }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return false; // No match found
+        return false; 
     }
 
     private void openMainPage() {
@@ -142,11 +123,10 @@ public class LoginPage extends JPanel {
         mainFrame.setVisible(true);
     }
 
-    // Method to add registration content to the panel
     private void addRegistrationContent() {
-        // Import the RegistrationPage content here
         RegistrationPage registrationPage = new RegistrationPage();
-        registrationPanel.add(registrationPage); // Add the RegistrationPage content to the registrationPanel
+        registrationPanel.add(registrationPage);
+        registrationPanel
         add(registrationPanel, BorderLayout.CENTER);
     }
 
