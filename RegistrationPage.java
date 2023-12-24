@@ -90,13 +90,20 @@ public class RegistrationPage extends JPanel {
                 String password = new String(jcomp2.getPassword()); // Use getPassword for JPasswordField
 
                 // Check if any field is empty
-                if (name.isEmpty() || username.isEmpty() || password.isEmpty()) {
-                    JOptionPane.showMessageDialog(RegistrationPage.this, "Name, username, and password cannot be blank.");
+                if ((name.isEmpty() ||
+                        !(name.matches("[a-zA-Z]+")))||
+                        (username.isEmpty() || !(username.matches("[a-zA-Z0-9!@#$%^&*()_+-]+")) )|| 
+                        (password.isEmpty()) || !(password.matches("[a-zA-Z0-9!@#$%^&*()_+-]+")) ) 
+                {
+                    JOptionPane.showMessageDialog(RegistrationPage.this, " something is wrong with Name,username or password .");
                 } else {
                     // Check if the username already exists
-                    if (userExists(username)) {
+                    if (userExists(username)) 
+                    {
                         JOptionPane.showMessageDialog(RegistrationPage.this, "Account with this username already exists!");
-                    } else {
+                    } 
+                    else 
+                    {
                         User newUser = new User(name, username, password);
                         userList.add(newUser); // Add user to the list
                         jcompname.setText("");
