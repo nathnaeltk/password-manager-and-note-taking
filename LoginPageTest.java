@@ -45,14 +45,4 @@ class LoginPageTest
         boolean result = loginPage.checkCredentials("invalidUsername", "invalidPassword");
         assertTrue(result);
     }
-
-    //
-
-
-
-
-
-
-
-
 }
