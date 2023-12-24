@@ -20,13 +20,13 @@ public class RegistrationPage extends JPanel {
     public JButton jcomp7;
     public JLabel imageLabel;
 
-    public List<User> userList; // New list to store users
+    public List<User> userList; 
 
     public RegistrationPage() {
         jcomp1 = new JTextArea(2, 30);
         jcomp2 = new JPasswordField(30);
         Dimension preferredSize = jcomp2.getPreferredSize();
-        preferredSize.height *= 2; // Doubling the height
+        preferredSize.height *= 2; 
         jcomp2.setPreferredSize(preferredSize);
         jcompname = new JTextArea(2, 30);
         jlabelname = new JLabel("Name: ");
@@ -34,11 +34,11 @@ public class RegistrationPage extends JPanel {
         jcomp4 = new JLabel("Password: ");
 
         jcomp6 = new JButton("Login");
-        jcomp6.setBackground(new Color(0, 128, 0)); // Set the login button to green
+        jcomp6.setBackground(new Color(0, 128, 0)); 
         jcomp7 = new JButton("Register");
-        jcomp7.setBackground(new Color(0, 128, 0)); // Set the register button to green
+        jcomp7.setBackground(new Color(0, 128, 0));
 
-// Set the background of JTextArea and JPasswordField to sky blue
+// To set the background of JTextArea and JPasswordField to sky blue
         Color skyBlue = new Color(135, 206, 235);
         jcomp1.setBackground(skyBlue);
         jcomp2.setBackground(skyBlue);
@@ -80,16 +80,14 @@ public class RegistrationPage extends JPanel {
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        userList = new ArrayList<>(); // Initialize user list
+        userList = new ArrayList<>(); 
 
         jcomp7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String name = jcompname.getText();
                 String username = jcomp1.getText();
-                String password = new String(jcomp2.getPassword()); // Use getPassword for JPasswordField
-
-                // Check if any field is empty
+                String password = new String(jcomp2.getPassword());
                 if ((name.isEmpty() ||
                         !(name.matches("[a-zA-Z]+")))||
                         (username.isEmpty() || !(username.matches("[a-zA-Z0-9!@#$%^&*()_+-]+")) )|| 
@@ -97,7 +95,7 @@ public class RegistrationPage extends JPanel {
                 {
                     JOptionPane.showMessageDialog(RegistrationPage.this, " something is wrong with Name,username or password .");
                 } else {
-                    // Check if the username already exists
+                    
                     if (userExists(username)) 
                     {
                         JOptionPane.showMessageDialog(RegistrationPage.this, "Account with this username already exists!");
@@ -105,7 +103,7 @@ public class RegistrationPage extends JPanel {
                     else 
                     {
                         User newUser = new User(name, username, password);
-                        userList.add(newUser); // Add user to the list
+                        userList.add(newUser);
                         jcompname.setText("");
                         jcomp1.setText("");
                         jcomp2.setText("");
@@ -132,15 +130,15 @@ public class RegistrationPage extends JPanel {
     public boolean userExists(String username) {
         for (User user : userList) {
             if (user.getUsername().equals(username)) {
-                return true; // User already exists
+                return true; 
             }
         }
-        return false; // User does not exist
+        return false; 
     }
 
     public void addLoginPageContent() {
         abcd loginPage = new abcd(); 
-        add(loginPage); // calling the add method
+        add(loginPage); 
     }
 
     public void saveUsersToJson() {
