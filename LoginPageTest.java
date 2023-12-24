@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LoginPageTest
 {
 
-    @Test//
+    @Test
     public void test_register_button_click()
     {
         LoginPage loginPage = new LoginPage();
@@ -32,14 +32,14 @@ class LoginPageTest
         assertNotNull(result);
     }
 
-    @Test  //
+    @Test  
     public void test_valid_username_and_password() {
         LoginPage loginPage = new LoginPage();
         boolean result = loginPage.checkCredentials("validUsername", "validPassword");
         assertTrue(result);
     }
 
-    @Test //Given a invalid username or invalid password, the method should return false.
+    @Test //if it gets invalid username or invalid password, the method should return false.
     public void test_invalid_username_and_password() {
         LoginPage loginPage = new LoginPage();
         boolean result = loginPage.checkCredentials("invalidUsername", "invalidPassword");
