@@ -1,51 +1,38 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
 
 public class RegistrationPage extends JPanel {
-    public JTextArea jcomp1;
-    public JPasswordField jcomp2;
-    public JTextArea jcompname;
-    public JLabel jlabelname;
-    public JLabel jcomp3;
-    public JLabel jcomp4;
-    public JButton jcomp6;
-    public JButton jcomp7;
-    public JLabel imageLabel;
+    private JTextField jcompname;
+    private JTextArea jcomp1;
+    private JPasswordField jcomp2;
+    private JLabel jlabelname;
+    private JButton jcomp6;
+    private JButton jcomp7;
+    private DatabaseConnection dbConnection;
 
-    public List<User> userList; 
-
-    public RegistrationPage() {
+    public RegistrationPage(DatabaseConnection dbConnection) {
+        this.dbConnection = dbConnection;
         jcomp1 = new JTextArea(2, 30);
         jcomp2 = new JPasswordField(30);
         Dimension preferredSize = jcomp2.getPreferredSize();
-        preferredSize.height *= 2; 
+        preferredSize.height *= 2;
         jcomp2.setPreferredSize(preferredSize);
-        jcompname = new JTextArea(2, 30);
-        jlabelname = new JLabel("Name: ");
-        jcomp3 = new JLabel("Username: ");
-        jcomp4 = new JLabel("Password: ");
-
+        jcompname = new JTextField(30);
+        jlabelname = new JLabel("Name:");
+        JLabel jcomp3 = new JLabel("Username:");
+        JLabel jcomp4 = new JLabel("Password:");
         jcomp6 = new JButton("Login");
-        jcomp6.setBackground(new Color(0, 128, 0)); 
+        jcomp6.setBackground(new Color(0, 128, 0));
         jcomp7 = new JButton("Register");
         jcomp7.setBackground(new Color(0, 128, 0));
 
-// To set the background of JTextArea and JPasswordField to sky blue
         Color skyBlue = new Color(135, 206, 235);
         jcomp1.setBackground(skyBlue);
         jcomp2.setBackground(skyBlue);
         jcompname.setBackground(skyBlue);
-
-        ImageIcon imageIcon = new ImageIcon("image.png");
-        imageLabel = new JLabel(imageIcon);
 
         setLayout(new BorderLayout());
 
@@ -63,100 +50,106 @@ public class RegistrationPage extends JPanel {
         inputPanel.add(jcompname, gbc);
         gbc.gridy++;
         inputPanel.add(jcomp3, gbc);
-
         gbc.gridy++;
         inputPanel.add(jcomp1, gbc);
-
         gbc.gridy++;
         inputPanel.add(jcomp4, gbc);
-
         gbc.gridy++;
         inputPanel.add(jcomp2, gbc);
 
         buttonPanel.add(jcomp6);
         buttonPanel.add(jcomp7);
 
-        add(imageLabel, BorderLayout.NORTH);
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
-
-        userList = new ArrayList<>(); 
 
         jcomp7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = jcompname.getText();
-                String username = jcomp1.getText();
-                String password = new String(jcomp2.getPassword());
-                if ((name.isEmpty() ||
-                        !(name.matches("[a-zA-Z]+")))||
-                        (username.isEmpty() || !(username.matches("[a-zA-Z0-9!@#$%^&*()_+-]+")) )|| 
-                        (password.isEmpty()) || !(password.matches("[a-zA-Z0-9!@#$%^&*()_+-]+")) ) 
-                {
-                    JOptionPane.showMessageDialog(RegistrationPage.this, " something is wrong with Name,username or password .");
-                } else {
-                    
-                    if (userExists(username)) 
-                    {
-                        JOptionPane.showMessageDialog(RegistrationPage.this, "Account with this username already exists!");
-                    } 
-                    else 
-                    {
-                        User newUser = new User(name, username, password);
-                        userList.add(newUser);
-                        jcompname.setText("");
-                        jcomp1.setText("");
-                        jcomp2.setText("");
-                        saveUsersToJson();
-                        JOptionPane.showMessageDialog(RegistrationPage.this, "Registration Successful! You may now login.");
-                    }
-                }
+                registerUser();
             }
         });
-
-
 
         jcomp6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                removeAll();
-                addLoginPageContent();
-                revalidate();
-                repaint();
+                openLoginPage();
             }
         });
     }
 
-    public boolean userExists(String username) {
-        for (User user : userList) {
-            if (user.getUsername().equals(username)) {
-                return true; 
+    private void registerUser() {
+        String name = jcompname.getText().trim();
+        String username = jcomp1.getText().trim();
+        String password = new String(jcomp2.getPassword());
+
+        if (name.isEmpty() || username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+        } else {
+            if (userExists(username)) {
+                JOptionPane.showMessageDialog(this, "Account with this username already exists!");
+            } else {
+                if (saveUserToDatabase(name, username, password)) {
+                    JOptionPane.showMessageDialog(this, "Registration Successful! You may now login.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Registration failed. Please try again later.");
+                }
             }
         }
-        return false; 
     }
 
-    public void addLoginPageContent() {
-        abcd loginPage = new abcd(); 
-        add(loginPage); 
-    }
-
-    public void saveUsersToJson() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(userList);
-
-        try (FileWriter fileWriter = new FileWriter("users.json")) {
-            fileWriter.write(json);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+    private boolean userExists(String username) {
+        try {
+            Connection connection = dbConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            boolean exists = resultSet.next();
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+            return exists;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
+    }
+
+    private boolean saveUserToDatabase(String name, String username, String password) {
+        try {
+            Connection connection = dbConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (name, username, password) VALUES (?, ?, ?)");
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, password);
+            int rowsAffected = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.close();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void openLoginPage() {
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        frame.dispose();
+        LoginPage loginPage = new LoginPage(dbConnection);
+        JFrame loginFrame = new JFrame("Login - Astawash");
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.getContentPane().add(loginPage);
+        loginFrame.setSize(600, 600);
+        loginFrame.setLocationRelativeTo(null);
+        loginFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Register - Astawash");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            RegistrationPage panel = new RegistrationPage();
+            DatabaseConnection dbConnection = new DatabaseConnection(); // Initialize your DatabaseConnection object here
+            RegistrationPage panel = new RegistrationPage(dbConnection);
             frame.getContentPane().add(panel);
             frame.setSize(600, 600);
             frame.setLocationRelativeTo(null);

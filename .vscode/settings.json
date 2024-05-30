@@ -1,6 +1,7 @@
 {
     "java.project.referencedLibraries": [
-        "lib/gson-2.10.1.jar" , 
-        "lib/junit-4.12.jar" ,
-    ]
+        "lib/mysql-connector-j-8.2.0.jar",
+        "c:\\Users\\TOSHIBA\\Downloads\\Telegram Desktop\\mysql-connector-j-8.2.0.jar"
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }

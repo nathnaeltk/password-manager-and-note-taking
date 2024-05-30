@@ -1,25 +1,26 @@
 import javax.swing.*;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Type;
-import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileReader;
-import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class LoginPage extends JPanel {
-    public JTextArea jcomp1;
-    public JTextArea jcomp2;
-    public JLabel jcomp3;
-    public JLabel jcomp4;
-    public JButton jcomp6;
-    public JButton jcomp7;
-    public JLabel imageLabel;
-    public JPanel registrationPanel; // Panel to hold registration content
+    private JTextArea jcomp1;
+    private JTextArea jcomp2;
+    private JLabel jcomp3;
+    private JLabel jcomp4;
+    private JButton jcomp6;
+    private JButton jcomp7;
+    private JLabel imageLabel;
+    private JPanel registrationPanel; // Panel to hold registration content
+    private DatabaseConnection dbConnection; // Database connection
 
-    public LoginPage() {
+    public LoginPage(DatabaseConnection dbConnection) {
+        this.dbConnection = dbConnection;
+
         // Construct components
         jcomp1 = new JTextArea(2, 30);
         jcomp2 = new JTextArea(2, 30);
@@ -74,11 +75,10 @@ public class LoginPage extends JPanel {
         inputPanel.setBackground(skyBlue); // Set the background color of the input panel to sky blue
         buttonPanel.setBackground(skyBlue); // Set the background color of the button panel to sky blue
 
-
         jcomp6.setBackground(green); // Set the login button color to green
         jcomp7.setBackground(green); // Set the register button color to green
 
-
+        // Action listener for the login button
         jcomp6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,10 +86,9 @@ public class LoginPage extends JPanel {
                     String enteredUsername = jcomp1.getText().trim();
                     String enteredPassword = jcomp2.getText().trim();
 
-                    if ((enteredUsername.isEmpty() || enteredPassword.isEmpty()) || !(enteredUsername.matches("[a-zA-Z]+")) || !(enteredPassword.matches("[a-zA-Z0-9!@#$%^&*()_+-]+")) ) {
-                        throw new IllegalArgumentException("something is wrong with Username and password .");
+                    if ((enteredUsername.isEmpty() || enteredPassword.isEmpty()) || !(enteredUsername.matches("[a-zA-Z]+")) || !(enteredPassword.matches("[a-zA-Z0-9!@#$%^&*()_+-]+"))) {
+                        throw new IllegalArgumentException("Invalid username or password.");
                     }
-
 
                     if (checkCredentials(enteredUsername, enteredPassword)) {
                         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(LoginPage.this);
@@ -104,6 +103,7 @@ public class LoginPage extends JPanel {
             }
         });
 
+        // Action listener for the register button
         jcomp7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -113,31 +113,27 @@ public class LoginPage extends JPanel {
                 repaint();
             }
         });
-
-
-
     }
 
+    // Method to check user credentials in the database
     public boolean checkCredentials(String username, String password) {
-        try (FileReader fileReader = new FileReader("users.json")) {
-            Gson gson = new Gson();
-            Type userListType = new TypeToken<List<User>>(){}.getType();
-            List<User> userList = gson.fromJson(fileReader, userListType);
+        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
 
-            if (userList != null) {
-                for (User user : userList) {
-                    if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                        return true;
-                    }
-                }
+            if (rs.next()) {
+                return true;
             }
-
-        } catch (IOException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return true;
+        return false;
     }
 
+    // Method to open the main page after successful login
     public void openMainPage() {
         MainPage mainPage = new MainPage();
         JFrame mainFrame = new JFrame("Main Page");
@@ -148,19 +144,19 @@ public class LoginPage extends JPanel {
         mainFrame.setVisible(true);
     }
 
-    public void addRegistrationContent()
-    {
-
-        RegistrationPage registrationPage = new RegistrationPage();
+    // Method to add registration content to the panel
+    public void addRegistrationContent() {
+        RegistrationPage registrationPage = new RegistrationPage(dbConnection);
         registrationPanel.add(registrationPage);
         add(registrationPanel, BorderLayout.CENTER);
     }
 
-    public static void main(String[] args) throws IllegalArgumentException {
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Login - Astawash");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            LoginPage panel = new LoginPage();
+            DatabaseConnection dbConnection = new DatabaseConnection(); // Initialize your DatabaseConnection object here
+            LoginPage panel = new LoginPage(dbConnection);
             frame.getContentPane().add(panel);
             frame.setSize(600, 560);
             frame.setLocationRelativeTo(null);

@@ -1,11 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.security.SecureRandom;
-import java.util.HashMap;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -13,12 +9,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 public class PasswordsManager extends JPanel {
-    // this is used to make a component declaration
+    // Component declarations
     private JList<String> jcomp1;
     private JTextField jcomp2d;
     private JButton jcomp11d;
@@ -36,12 +29,10 @@ public class PasswordsManager extends JPanel {
     private JLabel imageLabel; // New JLabel for the image
 
     public PasswordsManager() {
-        
-        Set<String> websiteNames = loadWebsiteNamesFromJson("Password.json");
+        Set<String> websiteNames = loadWebsiteNamesFromDatabase();
         String[] jcomp1Items = websiteNames.toArray(new String[0]);
 
         jcomp1 = new JList<>(jcomp1Items);
-        
         jcomp1.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -85,11 +76,10 @@ public class PasswordsManager extends JPanel {
         jcomp12 = new JButton("Logout");
         jcomp13 = new JButton("Notes");
 
-        
         setPreferredSize(new Dimension(669, 368));
         setLayout(null);
 
-        //adding components
+        // Adding components
         add(jcomp1);
         add(jcomp2d);
         add(jcomp11d);
@@ -121,7 +111,6 @@ public class PasswordsManager extends JPanel {
         jcomp13.setBounds(390, 40, 100, 25);
         setBackground(new Color(190, 203, 226)); // Sky Blue color
 
-
         jcomp12.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,14 +125,12 @@ public class PasswordsManager extends JPanel {
             }
         });
 
-
-        Color buttonColor = new Color(220, 140, 34); 
+        Color buttonColor = new Color(220, 140, 34);
         jcomp11d.setBackground(buttonColor);
         jcomp11b.setBackground(buttonColor);
         jcomp11.setBackground(buttonColor);
         jcomp12.setBackground(buttonColor);
         jcomp13.setBackground(buttonColor);
-
 
         ImageIcon imageIcon = new ImageIcon("image.png");
         Image image = imageIcon.getImage();
@@ -155,56 +142,54 @@ public class PasswordsManager extends JPanel {
     }
 
     private void openLoginPage() {
-        // we instantiate the  LoginPage
-        LoginPage loginPage = new LoginPage();
-    
+        // we instantiate the LoginPage
+        LoginPage loginPage = new LoginPage(null);
+
         // Create a new JFrame to contain the LoginPage window
         JFrame loginFrame = new JFrame("Login Page");
         loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the LoginPage window
-    
+
         // Set the content of the frame to the LoginPage instance
         loginFrame.getContentPane().add(loginPage);
-    
+
         // Adjust the frame properties and display it
         loginFrame.pack();
         loginFrame.setLocationRelativeTo(null); // Center the frame on the screen
         loginFrame.setVisible(true);
-    
+
         // Hide or dispose of the MainPage frame
         JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
         mainFrame.setVisible(false); // Hides the MainPage frame
         // Alternatively, you can use mainFrame.dispose(); to close the MainPage frame
     }
 
-    
     private void openMainPage() {
         // Instantiate PasswordsManager
         MainPage mainPage = new MainPage();
-    
+
         // Create a new JFrame to contain the PasswordsManager window
         JFrame mainPageFrame = new JFrame("Astawash Dashboard");
         mainPageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the PasswordsManager window
-    
+
         // Set the content of the frame to the PasswordsManager instance
         mainPageFrame.getContentPane().add(mainPage);
-    
+
         mainPageFrame.pack();
         mainPageFrame.setLocationRelativeTo(null); // Center the frame on the screen
         mainPageFrame.setVisible(true);
-    
+
         JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
-        mainFrame.setVisible(false); 
+        mainFrame.setVisible(false);
     }
 
     private void generatePassword() {
-       //to generate a strong password
-        int passwordLength = 12; 
+        // to generate a strong password
+        int passwordLength = 12;
         String generatedPassword = generateStrongPassword(passwordLength);
         jcomp7.setText(generatedPassword);
     }
 
     private String generateStrongPassword(int length) {
-    
         String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lowercase = "abcdefghijklmnopqrstuvwxyz";
         String digits = "0123456789";
@@ -222,139 +207,85 @@ public class PasswordsManager extends JPanel {
         return password.toString();
     }
 
-
     private void searchWebsite() {
-       
         String enteredWebsite = capitalize(jcomp2d.getText().trim());
 
         if (!enteredWebsite.isEmpty()) {
-            try {
-                File file = new File("Password.json");
-                if (file.exists() && file.length() > 0) {
-                    FileReader fileReader = new FileReader(file);
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement("SELECT email, password FROM websites WHERE website_name = ?")) {
+                pstmt.setString(1, enteredWebsite);
+                ResultSet rs = pstmt.executeQuery();
 
-                   
-                    TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
-                    HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, typeToken.getType());
-                    fileReader.close();
-
-                   
-                    if (data.containsKey(enteredWebsite)) {
-                       
-                        HashMap<String, String> websiteDetails = data.get(enteredWebsite);
-                        String email = websiteDetails.get("email");
-                        String password = websiteDetails.get("password");
-
-                        String message = "Website: " + enteredWebsite + "\n"
-                                + "Email: " + email + "\n"
-                                + "Password: " + password;
-                        JOptionPane.showMessageDialog(this, message, "Password Details", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        
-                        JOptionPane.showMessageDialog(this, "Website not found! please make sure that their is no typing error", "Search Result", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                if (rs.next()) {
+                    String email = rs.getString("email");
+                    String password = rs.getString("password");
+                    String message = "Website: " + enteredWebsite + "\nEmail: " + email + "\nPassword: " + password;
+                    JOptionPane.showMessageDialog(this, message, "Password Details", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Website not found! Please make sure there is no typing error", "Search Result", JOptionPane.INFORMATION_MESSAGE);
                 }
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
 
-
     private void displayPasswordDetails() {
-      
         String selectedWebsite = jcomp1.getSelectedValue();
 
         if (selectedWebsite != null) {
-            try {
-                File file = new File("Password.json");
-                if (file.exists() && file.length() > 0) {
-                    FileReader fileReader = new FileReader(file);
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement("SELECT email, password FROM websites WHERE website_name = ?")) {
+                pstmt.setString(1, selectedWebsite);
+                ResultSet rs = pstmt.executeQuery();
 
-                   
-                    TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
-                    HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, typeToken.getType());
-                    fileReader.close();
-
-                    HashMap<String, String> websiteDetails = data.get(selectedWebsite);
-                    if (websiteDetails != null) {
-                        String email = websiteDetails.get("email");
-                        String password = websiteDetails.get("password");
-
-                    
-                        String message = "Website: " + selectedWebsite + "\n"
-                                + "Email: " + email + "\n"
-                                + "Password: " + password;
-                        JOptionPane.showMessageDialog(this, message, "Password Details", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                if (rs.next()) {
+                    String email = rs.getString("email");
+                    String password = rs.getString("password");
+                    String message = "Website: " + selectedWebsite + "\nEmail: " + email + "\nPassword: " + password;
+                    JOptionPane.showMessageDialog(this, message, "Password Details", JOptionPane.INFORMATION_MESSAGE);
                 }
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
-        }
+    }
 
-    private Set<String> loadWebsiteNamesFromJson(String filePath) {
-        try {
-            File file = new File(filePath);
-            if (file.exists() && file.length() > 0) {
-                FileReader fileReader = new FileReader(file);
-
-                TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
-                HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, typeToken.getType());
-                fileReader.close();
-
-                return data.keySet(); 
+    private Set<String> loadWebsiteNamesFromDatabase() {
+        Set<String> websiteNames = new HashSet<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT website_name FROM websites")) {
+            while (rs.next()) {
+                websiteNames.add(rs.getString("website_name"));
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return new HashSet<>(); 
+        return websiteNames;
     }
 
     public void save() {
         String website = jcomp2.getText().trim();
         char[] password = jcomp7.getPassword();
         String email = jcomp5.getText().trim();
-        HashMap<String, HashMap<String, String>> new_data = new HashMap<>();
-        HashMap<String, String> innerMap = new HashMap<>();
-        innerMap.put("email", email);
-        innerMap.put("password", String.valueOf(password));
-        new_data.put(capitalize(website), innerMap);
-    
+
         if (website.length() == 0 || password.length == 0) {
-            JOptionPane.showMessageDialog(this, "Please make sure you haven't left any fields empty!",
-                    "Oops", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please make sure you haven't left any fields empty!", "Oops", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            try {
-                File file = new File("Password.json");
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
-    
-            
-                FileReader fileReader = new FileReader(file);
-                HashMap<String, HashMap<String, String>> data = new HashMap<>();
-                if (file.length() > 0) {
-                    data = new Gson().fromJson(fileReader, HashMap.class);
-                }
-                fileReader.close();
-    
-                // this is used to update old data with new data
-                data.putAll(new_data);
-    
-                FileWriter fileWriter = new FileWriter(file);
-                new GsonBuilder().setPrettyPrinting().create().toJson(data, fileWriter);
-                fileWriter.flush();
-                fileWriter.close();
-    
-                Set<String> websiteNames = loadWebsiteNamesFromJson("Password.json");
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement("REPLACE INTO websites (website_name, email, password) VALUES (?, ?, ?)")) {
+                pstmt.setString(1, capitalize(website));
+                pstmt.setString(2, email);
+                pstmt.setString(3, String.valueOf(password));
+                pstmt.executeUpdate();
+
+                Set<String> websiteNames = loadWebsiteNamesFromDatabase();
                 String[] jcomp1Items = websiteNames.toArray(new String[0]);
-    
-                
+
                 jcomp1.setListData(jcomp1Items);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
             jcomp2.setText("");
             jcomp2d.setText("");
@@ -362,15 +293,13 @@ public class PasswordsManager extends JPanel {
             jcomp5.setText("");
         }
     }
-    
+
     private String capitalize(String str) {
         if (str == null || str.isEmpty()) {
             return str;
         }
         return Character.toUpperCase(str.charAt(0)) + str.substring(1).toLowerCase();
     }
-    
-
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("PasswordsManager");

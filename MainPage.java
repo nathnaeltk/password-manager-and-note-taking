@@ -1,14 +1,8 @@
 import java.awt.*;
 import javax.swing.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Set;
 import javax.swing.event.ListSelectionEvent;
@@ -27,11 +21,9 @@ public class MainPage extends JPanel {
     private JLabel jcomp10;
     private JTextArea jcomp11;
     private JLabel jcomp12;
-    String filePath = "Data.json";
     private DefaultListModel<String> listModel;
 
     public MainPage() {
-       
         JMenu optionsMenu = new JMenu("Options");
         JMenuItem manage_passwordsItem = new JMenuItem("Manage Passwords");
         optionsMenu.add(manage_passwordsItem);
@@ -47,7 +39,6 @@ public class MainPage extends JPanel {
         JMenuItem aboutItem = new JMenuItem("About");
         helpMenu.add(aboutItem);
 
-        
         Options = new JMenuBar();
         Options.add(optionsMenu);
         Options.add(helpMenu);
@@ -58,7 +49,6 @@ public class MainPage extends JPanel {
         jcomp5 = new JButton("Manage Passwords");
         jcomp6 = new JButton("New Note");
         jcomp7 = new JButton("Save");
-
 
         jcomp7.addActionListener(new ActionListener() {
             @Override
@@ -76,32 +66,35 @@ public class MainPage extends JPanel {
 
         jcomp11.setToolTipText("Text");
 
-        
         setPreferredSize(new Dimension(669, 368));
         setLayout(null);
 
         jcomp5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openPasswordsManager();
+                try {
+                    openPasswordsManager();
+                } catch (SQLException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
             }
         });
 
         jcomp6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openMainPage();
+                openLoginPage();
             }
         });
 
-        
         jcomp8.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 openLoginPage();
             }
         });
-        
+
         add(Options);
         add(scrollPane);
         add(jcomp5);
@@ -114,7 +107,6 @@ public class MainPage extends JPanel {
         add(jcomp11);
         add(jcomp12);
 
-    
         Options.setBounds(0, 0, 735, 20);
         scrollPane.setBounds(60, 115, 150, 200); 
         jcomp5.setBounds(260, 40, 165, 25);
@@ -128,9 +120,8 @@ public class MainPage extends JPanel {
         jcomp12.setBounds(60, 90, 60, 25);
         setBackground(new Color(190, 203, 226)); 
 
-       
-       Color buttonColor = new Color(220, 140, 34); 
-       Color noteColor = new Color(242, 236, 183);
+        Color buttonColor = new Color(220, 140, 34); 
+        Color noteColor = new Color(242, 236, 183);
         
         jcomp11.setBackground(noteColor);
 
@@ -142,167 +133,128 @@ public class MainPage extends JPanel {
                 }
             }
         });
-        
-        try {
-            File file = new File(filePath);
-            if (file.exists() && file.length() > 0) {
-                FileReader fileReader = new FileReader(file);
-                HashMap<String, HashMap<String, String>> data = new Gson().fromJson(fileReader, HashMap.class);
-                fileReader.close();
 
-                Set<String> keys = data.keySet();
-                for (String key : keys) {
-                    listModel.addElement(key);
-                }
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String query = "SELECT title FROM notes";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String title = rs.getString("title");
+                listModel.addElement(title);
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    private void openMainPage() {
+    public void openMainPageExternal() {
         MainPage mainPage = new MainPage();
-    
+
         JFrame mainPageFrame = new JFrame("Astawash Dashboard");
-        mainPageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // This close only the PasswordsManager window
-    
-       
+        mainPageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         mainPageFrame.getContentPane().add(mainPage);
-    
-   
+
         mainPageFrame.pack();
-        mainPageFrame.setLocationRelativeTo(null); 
+        mainPageFrame.setLocationRelativeTo(null);
         mainPageFrame.setVisible(true);
-    
-        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); 
-        mainFrame.setVisible(false); 
+
+        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        mainFrame.setVisible(false);
     }
 
-    private void openPasswordsManager() {
-       
+    public void openPasswordsManager() throws SQLException {
         PasswordsManager passwordsManager = new PasswordsManager();
-    
-        
+   
         JFrame passwordsManagerFrame = new JFrame("Passwords Manager");
-        passwordsManagerFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
-    
+        passwordsManagerFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+   
         passwordsManagerFrame.getContentPane().add(passwordsManager);
-    
-        
+   
         passwordsManagerFrame.pack();
         passwordsManagerFrame.setLocationRelativeTo(null);
         passwordsManagerFrame.setVisible(true);
-    
-      
+   
         JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        mainFrame.setVisible(false); 
+        mainFrame.setVisible(false);
     }
-
-
-private void openLoginPage() {
-   
-    LoginPage loginPage = new LoginPage();
-
-    // To create a new JFrame to contain the LoginPage window
-    JFrame loginFrame = new JFrame("Login Page");
-    loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the LoginPage window
-
     
-    loginFrame.getContentPane().add(loginPage);
-
-    loginFrame.pack();
-    loginFrame.setLocationRelativeTo(null); 
-    loginFrame.setVisible(true);
-
-    
-    JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); 
-    mainFrame.setVisible(false);
-   
-}
     
 
-//This is a method to read data from the file and return as a HashMap
-private HashMap<String, HashMap<String, String>> readDataFromFile() {
-    try {
-        File file = new File(filePath);
-        if (file.exists() && file.length() > 0) {
-            FileReader fileReader = new FileReader(file);
+    private void openLoginPage() {
+        JFrame loginPageFrame = new JFrame("Login Page");
+        loginPageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+        LoginPage loginPage = new LoginPage(null);
+        loginPageFrame.getContentPane().add(loginPage);
+    
+        loginPageFrame.pack();
+        loginPageFrame.setLocationRelativeTo(null);
+        loginPageFrame.setVisible(true);
+    
+        JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        currentFrame.dispose();
+    }
 
-            
-            TypeToken<HashMap<String, HashMap<String, String>>> typeToken = new TypeToken<>() {};
-            return new Gson().fromJson(fileReader, typeToken.getType());
-        }
-    } catch (IOException ex) {
-        ex.printStackTrace();
-    }
-    return new HashMap<>();
-}
-private void displayNoteForSelectedTitle() {
-    String selectedTitle = noteList.getSelectedValue();
-    if (selectedTitle != null) {
-        HashMap<String, HashMap<String, String>> data = readDataFromFile();
-        HashMap<String, String> noteData = data.get(selectedTitle);
-        if (noteData != null) {
-            String note = noteData.get("note");
-            jcomp9.setText(selectedTitle); // Set the selected title to jcomp9
-            jcomp11.setText(note);
-        }
-    }
-}
- public void save() {
+    public void save() {
         String title = jcomp9.getText();
         String note = jcomp11.getText();
-        HashMap<String, HashMap<String, String>> new_data = new HashMap<>();
-        HashMap<String, String> innerMap = new HashMap<>();
-        innerMap.put("note", note);
-        new_data.put(title, innerMap);
 
-        if (title.length() == 0 ) {
+        if (title.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please make sure you haven't left any fields empty!",
                     "Oops", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            try {
-                File file = new File("Data.json");
-                if (!file.exists()) {
-                    file.createNewFile();
+            try (Connection conn = DatabaseConnection.getConnection()) {
+                String query = "INSERT INTO notes (title, content) VALUES (?, ?) ON DUPLICATE KEY UPDATE content = VALUES(content)";
+                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt.setString(1, title);
+                stmt.setString(2, note);
+                stmt.executeUpdate();
+                
+                if (!listModel.contains(title)) {
+                    listModel.addElement(title);
                 }
-
-                // Reading old data
-                FileReader fileReader = new FileReader(file);
-                HashMap<String, HashMap<String, String>> data = new HashMap<>();
-                if (file.length() > 0) {
-                    data = new Gson().fromJson(fileReader, HashMap.class);
-                }
-                fileReader.close();
-
-                // Updating old data with new data
-                data.putAll(new_data);
-
-                // Saving the updated data
-                FileWriter fileWriter = new FileWriter(file);
-                new GsonBuilder().setPrettyPrinting().create().toJson(data, fileWriter);
-                fileWriter.flush();
-                fileWriter.close();
-                // Adding the current title to the listModel
-                listModel.addElement(title);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
 
             jcomp9.setText("");
             jcomp11.setText("");
         }
     }
-    
-    
+
+    private void displayNoteForSelectedTitle() {
+        String selectedTitle = noteList.getSelectedValue();
+        if (selectedTitle != null) {
+            try (Connection conn = DatabaseConnection.getConnection()) {
+                String query = "SELECT content FROM notes WHERE title = ?";
+                PreparedStatement stmt = conn.prepareStatement(query);
+                stmt.setString(1, selectedTitle);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    String note = rs.getString("content");
+                    jcomp9.setText(selectedTitle); 
+                    jcomp11.setText(note);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Astawash Dashboard");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(new MainPage());
-        frame.pack();
-        frame.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Astawash Dashboard");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+            MainPage mainPage = new MainPage();
+            frame.getContentPane().add(mainPage);
+    
+            frame.pack();
+            frame.setLocationRelativeTo(null); 
+            frame.setVisible(true);
+        });
     }
 }
-         
-
-
