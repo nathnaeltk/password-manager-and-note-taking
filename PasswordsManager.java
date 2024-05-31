@@ -11,7 +11,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 public class PasswordsManager extends JPanel {
-    // Component declarations
     private JList<String> jcomp1;
     private JTextField jcomp2d;
     private JButton jcomp11d;
@@ -26,7 +25,7 @@ public class PasswordsManager extends JPanel {
     private JButton jcomp11;
     private JButton jcomp12;
     private JButton jcomp13;
-    private JLabel imageLabel; // New JLabel for the image
+    private JLabel imageLabel;
 
     public PasswordsManager() {
         Set<String> websiteNames = loadWebsiteNamesFromDatabase();
@@ -43,7 +42,6 @@ public class PasswordsManager extends JPanel {
         });
         jcomp2d = new JTextField(5);
         jcomp11d = new JButton("Search");
-        // Action listeners
         jcomp11d.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,7 +56,6 @@ public class PasswordsManager extends JPanel {
         jcomp7 = new JPasswordField(5);
         jcomp10 = new JLabel("Save a New Password");
         jcomp11b = new JButton("Generate Password");
-        // Action listeners
         jcomp11b.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,7 +63,6 @@ public class PasswordsManager extends JPanel {
             }
         });
         jcomp11 = new JButton("Save");
-        // Action listeners
         jcomp11.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -79,7 +75,6 @@ public class PasswordsManager extends JPanel {
         setPreferredSize(new Dimension(669, 368));
         setLayout(null);
 
-        // Adding components
         add(jcomp1);
         add(jcomp2d);
         add(jcomp11d);
@@ -109,7 +104,7 @@ public class PasswordsManager extends JPanel {
         jcomp11.setBounds(495, 285, 100, 25);
         jcomp12.setBounds(495, 40, 100, 25);
         jcomp13.setBounds(390, 40, 100, 25);
-        setBackground(new Color(190, 203, 226)); // Sky Blue color
+        setBackground(new Color(190, 203, 226));
 
         jcomp12.addActionListener(new ActionListener() {
             @Override
@@ -134,56 +129,42 @@ public class PasswordsManager extends JPanel {
 
         ImageIcon imageIcon = new ImageIcon("image.png");
         Image image = imageIcon.getImage();
-        Image scaledImage = image.getScaledInstance(253, 133, Image.SCALE_SMOOTH); // Adjust size as needed
+        Image scaledImage = image.getScaledInstance(253, 133, Image.SCALE_SMOOTH);
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
         imageLabel = new JLabel(scaledImageIcon);
         add(imageLabel);
-        imageLabel.setBounds(25, -20, 200, 200); // Adjust position as needed
+        imageLabel.setBounds(25, -20, 200, 200);
     }
 
     private void openLoginPage() {
-        // we instantiate the LoginPage
         LoginPage loginPage = new LoginPage(null);
 
-        // Create a new JFrame to contain the LoginPage window
         JFrame loginFrame = new JFrame("Login Page");
-        loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the LoginPage window
-
-        // Set the content of the frame to the LoginPage instance
+        loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         loginFrame.getContentPane().add(loginPage);
-
-        // Adjust the frame properties and display it
         loginFrame.pack();
-        loginFrame.setLocationRelativeTo(null); // Center the frame on the screen
+        loginFrame.setLocationRelativeTo(null);
         loginFrame.setVisible(true);
 
-        // Hide or dispose of the MainPage frame
-        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
-        mainFrame.setVisible(false); // Hides the MainPage frame
-        // Alternatively, you can use mainFrame.dispose(); to close the MainPage frame
+        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        mainFrame.setVisible(false);
     }
 
     private void openMainPage() {
-        // Instantiate PasswordsManager
         MainPage mainPage = new MainPage();
 
-        // Create a new JFrame to contain the PasswordsManager window
         JFrame mainPageFrame = new JFrame("Astawash Dashboard");
-        mainPageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only the PasswordsManager window
-
-        // Set the content of the frame to the PasswordsManager instance
+        mainPageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         mainPageFrame.getContentPane().add(mainPage);
-
         mainPageFrame.pack();
-        mainPageFrame.setLocationRelativeTo(null); // Center the frame on the screen
+        mainPageFrame.setLocationRelativeTo(null);
         mainPageFrame.setVisible(true);
 
-        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this); // Assuming MainPage is a JPanel
+        JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         mainFrame.setVisible(false);
     }
 
     private void generatePassword() {
-        // to generate a strong password
         int passwordLength = 12;
         String generatedPassword = generateStrongPassword(passwordLength);
         jcomp7.setText(generatedPassword);

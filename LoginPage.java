@@ -15,13 +15,12 @@ public class LoginPage extends JPanel {
     private JButton jcomp6;
     private JButton jcomp7;
     private JLabel imageLabel;
-    private JPanel registrationPanel; // Panel to hold registration content
-    private DatabaseConnection dbConnection; // Database connection
+    private JPanel registrationPanel;
+    private DatabaseConnection dbConnection;
 
     public LoginPage(DatabaseConnection dbConnection) {
         this.dbConnection = dbConnection;
 
-        // Construct components
         jcomp1 = new JTextArea(2, 30);
         jcomp2 = new JTextArea(2, 30);
         jcomp3 = new JLabel("Username: ");
@@ -32,19 +31,16 @@ public class LoginPage extends JPanel {
         ImageIcon imageIcon = new ImageIcon("image.png");
         imageLabel = new JLabel(imageIcon);
 
-        // Set layout manager to BorderLayout for organized placement
         setLayout(new BorderLayout());
 
-        // Create panels to manage components' placement
         JPanel inputPanel = new JPanel(new GridBagLayout());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        registrationPanel = new JPanel(new BorderLayout()); // Initialize the registration panel
+        registrationPanel = new JPanel(new BorderLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Add components to inputPanel using GridBagLayout
         gbc.gridx = 0;
         gbc.gridy = 0;
         inputPanel.add(jcomp3, gbc);
@@ -58,27 +54,23 @@ public class LoginPage extends JPanel {
         gbc.gridy++;
         inputPanel.add(jcomp2, gbc);
 
-        // Add components to buttonPanel using FlowLayout
         buttonPanel.add(jcomp6);
         buttonPanel.add(jcomp7);
 
-        // Add components to main panel using BorderLayout
         add(imageLabel, BorderLayout.NORTH);
         add(inputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Set background colors
-        Color skyBlue = new Color(190, 203, 226); // RGB color for sky blue
-        Color green = new Color(220, 140, 34); // RGB color for green
+        Color skyBlue = new Color(190, 203, 226);
+        Color green = new Color(220, 140, 34);
 
-        setBackground(skyBlue); // Set the background color of the main panel to sky blue
-        inputPanel.setBackground(skyBlue); // Set the background color of the input panel to sky blue
-        buttonPanel.setBackground(skyBlue); // Set the background color of the button panel to sky blue
+        setBackground(skyBlue);
+        inputPanel.setBackground(skyBlue);
+        buttonPanel.setBackground(skyBlue);
 
-        jcomp6.setBackground(green); // Set the login button color to green
-        jcomp7.setBackground(green); // Set the register button color to green
+        jcomp6.setBackground(green);
+        jcomp7.setBackground(green);
 
-        // Action listener for the login button
         jcomp6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -103,7 +95,6 @@ public class LoginPage extends JPanel {
             }
         });
 
-        // Action listener for the register button
         jcomp7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -115,7 +106,6 @@ public class LoginPage extends JPanel {
         });
     }
 
-    // Method to check user credentials in the database
     public boolean checkCredentials(String username, String password) {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (Connection conn = dbConnection.getConnection();
@@ -133,7 +123,6 @@ public class LoginPage extends JPanel {
         return false;
     }
 
-    // Method to open the main page after successful login
     public void openMainPage() {
         MainPage mainPage = new MainPage();
         JFrame mainFrame = new JFrame("Main Page");
@@ -144,7 +133,6 @@ public class LoginPage extends JPanel {
         mainFrame.setVisible(true);
     }
 
-    // Method to add registration content to the panel
     public void addRegistrationContent() {
         RegistrationPage registrationPage = new RegistrationPage(dbConnection);
         registrationPanel.add(registrationPage);
@@ -155,7 +143,7 @@ public class LoginPage extends JPanel {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Login - Astawash");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            DatabaseConnection dbConnection = new DatabaseConnection(); // Initialize your DatabaseConnection object here
+            DatabaseConnection dbConnection = new DatabaseConnection();
             LoginPage panel = new LoginPage(dbConnection);
             frame.getContentPane().add(panel);
             frame.setSize(600, 560);

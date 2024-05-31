@@ -2,11 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class RegistrationPage extends JPanel {
     private JTextField jcompname;
-    private JTextArea jcomp1;
+    private JTextField jcomp1;
     private JPasswordField jcomp2;
     private JLabel jlabelname;
     private JButton jcomp6;
@@ -15,61 +19,76 @@ public class RegistrationPage extends JPanel {
 
     public RegistrationPage(DatabaseConnection dbConnection) {
         this.dbConnection = dbConnection;
-        jcomp1 = new JTextArea(2, 30);
-        jcomp2 = new JPasswordField(30);
-        Dimension preferredSize = jcomp2.getPreferredSize();
-        preferredSize.height *= 2;
-        jcomp2.setPreferredSize(preferredSize);
         jcompname = new JTextField(30);
+        jcomp1 = new JTextField(30);
+        jcomp2 = new JPasswordField(30);
         jlabelname = new JLabel("Name:");
         JLabel jcomp3 = new JLabel("Username:");
         JLabel jcomp4 = new JLabel("Password:");
         jcomp6 = new JButton("Login");
-        jcomp6.setBackground(new Color(0, 128, 0));
+        jcomp6.setBackground(new Color(220, 140, 34));
         jcomp7 = new JButton("Register");
-        jcomp7.setBackground(new Color(0, 128, 0));
-
-        Color skyBlue = new Color(135, 206, 235);
-        jcomp1.setBackground(skyBlue);
-        jcomp2.setBackground(skyBlue);
-        jcompname.setBackground(skyBlue);
-
+        jcomp7.setBackground(new Color(220, 140, 34));
+        Color skyBlue = new Color(190, 203, 226);
+        Color white = Color.WHITE;
+        setBackground(skyBlue);
+        jcompname.setBackground(white);
+        jcomp1.setBackground(white);
+        jcomp2.setBackground(white);
+        Dimension textFieldSize = jcompname.getPreferredSize();
+        textFieldSize.height *= 1.5;
+        jcompname.setPreferredSize(textFieldSize);
+        jcomp1.setPreferredSize(textFieldSize);
+        jcomp2.setPreferredSize(textFieldSize);
         setLayout(new BorderLayout());
-
+        URL imageUrl = getClass().getResource("/image.png");
+        JLabel imageLabel;
+        if (imageUrl != null) {
+            ImageIcon imageIcon = new ImageIcon(imageUrl);
+            imageLabel = new JLabel(imageIcon);
+        } else {
+            System.out.println("Image not found!");
+            imageLabel = new JLabel("Image not found!");
+        }
+        add(imageLabel, BorderLayout.NORTH);
         JPanel inputPanel = new JPanel(new GridBagLayout());
+        inputPanel.setBackground(skyBlue);
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
+        buttonPanel.setBackground(skyBlue);
+        JPanel paddedInputPanel = new JPanel(new BorderLayout());
+        paddedInputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        paddedInputPanel.setBackground(skyBlue);
+        paddedInputPanel.add(inputPanel, BorderLayout.CENTER);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(5, 5, 5, 5);
-
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
         gbc.gridx = 0;
         gbc.gridy = 0;
         inputPanel.add(jlabelname, gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         inputPanel.add(jcompname, gbc);
+        gbc.gridx = 0;
         gbc.gridy++;
         inputPanel.add(jcomp3, gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         inputPanel.add(jcomp1, gbc);
+        gbc.gridx = 0;
         gbc.gridy++;
         inputPanel.add(jcomp4, gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         inputPanel.add(jcomp2, gbc);
-
         buttonPanel.add(jcomp6);
         buttonPanel.add(jcomp7);
-
-        add(inputPanel, BorderLayout.CENTER);
+        add(paddedInputPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
-
         jcomp7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 registerUser();
             }
         });
-
         jcomp6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,7 +101,6 @@ public class RegistrationPage extends JPanel {
         String name = jcompname.getText().trim();
         String username = jcomp1.getText().trim();
         String password = new String(jcomp2.getPassword());
-
         if (name.isEmpty() || username.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.");
         } else {
@@ -148,7 +166,7 @@ public class RegistrationPage extends JPanel {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Register - Astawash");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            DatabaseConnection dbConnection = new DatabaseConnection(); // Initialize your DatabaseConnection object here
+            DatabaseConnection dbConnection = new DatabaseConnection();
             RegistrationPage panel = new RegistrationPage(dbConnection);
             frame.getContentPane().add(panel);
             frame.setSize(600, 600);
